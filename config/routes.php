@@ -11,3 +11,7 @@
   $routes->get('/login', function() {
     HelloWorldController::login();
   });
+
+  $routes->get('/marja', function() {
+    HelloWorldController::marja();
+  });
