@@ -20,4 +20,12 @@ class HelloWorldController extends BaseController {
         View::make('suunnitelmat/marja.html');
     }
 
+    public static function paikat() {
+        View::make('suunnitelmat/paikat.html');
+    }
+    
+    public static function paikka() {
+        View::make('suunnitelmat/paikka.html');
+    }
+
 }

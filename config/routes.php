@@ -15,3 +15,11 @@
   $routes->get('/marja', function() {
     HelloWorldController::marja();
   });
+  
+  $routes->get('/marjastaja/paikat', function() {
+    HelloWorldController::paikat();
+  });
+  
+  $routes->get('/marjastaja/paikka', function() {
+    HelloWorldController::paikka();
+  });

@@ -148,9 +148,9 @@ try {
   <meta charset="utf-8">
   <title>Tietokantayhteystesti</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
-  <script src="vendor/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <script src="assets/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
   <style>.panel h2 {text-transform: capitalize; } th {text-transform: capitalize;}</style>
 </head>
 <body style="padding: 25px;">
