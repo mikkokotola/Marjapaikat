@@ -1,9 +1,36 @@
 <?php
 
   $routes->get('/', function() {
-    HelloWorldController::index();
+    MarjaController::index();
   });
 
+  $routes->get('/marjat', function() {
+    MarjaController::index();
+  });
+  
+  // Poistettava lopuksi, testireitti.
+  $routes->get('/marjastaja/paikat', function() {
+    HelloWorldController::paikat();
+  });
+  
+  // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.
+  $routes->get('/marjastaja/paikka', function() {
+    HelloWorldController::paikka();
+  });
+
+  // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.
+  $routes->get('/marja', function() {
+    HelloWorldController::marja();
+  });
+  
+  $routes->get('/marjat/new', function() {
+    MarjaController::lisaaMarja();
+  });
+  
+  $routes->post('/marjat/new', function() {
+    MarjaController::tallennaMarja();
+  });
+  
   $routes->get('/hiekkalaatikko', function() {
     HelloWorldController::sandbox();
   });
@@ -12,14 +39,17 @@
     HelloWorldController::login();
   });
 
-  $routes->get('/marja', function() {
-    HelloWorldController::marja();
+  
+  $routes->get('/marja/:id', function($id) {
+    MarjaController::show($id);
   });
   
-  $routes->get('/marjastaja/paikat', function() {
-    HelloWorldController::paikat();
+  
+  $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
+      // TO DO: Testattava, että marjastaja on oikea (että paikka liittyy tähän marjastajaan).
+      
+      PaikkaController::show($paikka_id);
   });
   
-  $routes->get('/marjastaja/paikka', function() {
-    HelloWorldController::paikka();
-  });
+  
+  

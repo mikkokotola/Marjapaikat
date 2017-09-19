@@ -1,0 +1,34 @@
+   
+{% extends "base.html" %}
+{% block content %}
+<div class="alert alert-success">
+  {{message}}
+</div>
+<h1>Marjatilasto</h1>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Marja</th>
+            <th>Poimittu määrä (kg) kuluva vuosi</th>
+            <th>Poimittu määrä (kg) koko historia</th>
+            <th>Poimineiden marjastajien lkm kuluva vuosi</th>
+            <th>Poimineiden marjastajien lkm koko historia</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for marja in marjat %}
+            <tr>
+                <td><a href="{{base_path}}/marja/{{marja.id}}">{{marja.nimi}}</td>
+                <td>150.5</td>
+                <td>330.8</td>
+                <td>10</td>
+                <td>15</td>
+            </tr>
+        {% endfor %}
+        {% block lisaaMarja %}
+        {% endblock %}
+    </tbody>
+</table>
+<a href="{{base_path}}/marjat/new" class="btn btn-primary" >Lisää uusi marja</a>
+{% endblock %}
