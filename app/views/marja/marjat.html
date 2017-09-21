@@ -1,9 +1,11 @@
    
 {% extends "base.html" %}
 {% block content %}
+{% if message %}
 <div class="alert alert-success">
-  {{message}}
+    {{message}}
 </div>
+{% endif %}
 <h1>Marjatilasto</h1>
 <table class="table table-bordered table-striped">
     <thead>
@@ -15,16 +17,16 @@
             <th>Poimineiden marjastajien lkm koko historia</th>
         </tr>
     </thead>
-    
+
     <tbody>
         {% for marja in marjat %}
-            <tr>
-                <td><a href="{{base_path}}/marja/{{marja.id}}">{{marja.nimi}}</td>
-                <td>150.5</td>
-                <td>330.8</td>
-                <td>10</td>
-                <td>15</td>
-            </tr>
+        <tr>
+            <td><a href="{{base_path}}/marja/{{marja.id}}">{{marja.nimi}}</td>
+            <td>150.5</td>
+            <td>330.8</td>
+            <td>10</td>
+            <td>15</td>
+        </tr>
         {% endfor %}
         {% block lisaaMarja %}
         {% endblock %}

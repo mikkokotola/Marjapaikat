@@ -16,14 +16,11 @@
         </tr>
     </thead>
     <tbody>
-        
+        {% for kayttaja in suosikkikayttajat %}
         <tr>
-            <td>Matti Jakonen</td>
+            <td>{{kayttaja.marjastaja_id}}</td>
         </tr>
-        <tr>
-            <td>Leila Laajanen</td>
-        </tr>
-        
+        {% endfor %}
     </tbody>
 </table>
 

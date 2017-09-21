@@ -31,6 +31,7 @@ class MarjaController extends BaseController {
         //$suosikkimarjat = Suosikkimarja::findByMarja($id);
         //KESKEN $suosikkikayttajat = Suosikkikayttajat::
         //KESKEN View::make('marja/marja.html', array('marja' => $marja, 'suosikkikayttajat' => $suosikkikayttajat));
+        View::make('marja/marja.html', array('marja' => $marja));
     }
     
     
