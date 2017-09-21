@@ -3,10 +3,10 @@
 {% block content %}
 <h1>{{marja.nimi}}</h1>
 <ul>
-    <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong> 50.8 kg</li>
-    <li><strong>Poimittu määrä (kg) koko historia: </strong> {{marjanMaaraKokoHistoria}} kg</li>
-    <li><strong>Poimineiden marjastajien lkm kuluva vuosi: </strong> 5</li>
-    <li><strong>Poimineiden marjastajien lkm koko historia: </strong> 7</li>    
+    <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong>{{marjanMaaraKuluvaVuosi}} kg</li>
+    <li><strong>Poimittu määrä (kg) koko historia: </strong>{{marjanMaaraKokoHistoria}} kg</li>
+    <li><strong>Poimineiden marjastajien lkm kuluva vuosi: </strong> {{poimineetKayttajatLkmKuluvaVuosi}}</li>
+    <li><strong>Poimineiden marjastajien lkm koko historia: </strong>{{poimineetKayttajatLkmKokoHistoria}}</li>    
 </ul>
 <h2>Käyttäjät, joiden suosikki tämä marja on</h2>
 <table class="table table-bordered table-striped">
@@ -23,6 +23,23 @@
         {% endfor %}
     </tbody>
 </table>
+
+<h2>Marjaa poimineet käyttäjät / VÄLIAIKAINEN</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nimi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for kayttaja in poimineetKayttajatByVuosi %}
+        <tr>
+            <td>{{kayttaja.etunimi}} {{kayttaja.sukunimi}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 
 
 <h2>Kärkipoimijat</h2>

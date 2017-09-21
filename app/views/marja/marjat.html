@@ -19,13 +19,13 @@
     </thead>
 
     <tbody>
-        {% for marja in marjat %}
+        {% for marja in marjadata %}
         <tr>
-            <td><a href="{{base_path}}/marja/{{marja.id}}">{{marja.nimi}}</td>
-            <td>150.5</td>
-            <td>330.8</td>
-            <td>10</td>
-            <td>15</td>
+            <td><a href="{{base_path}}/marja/{{marja[0]}}">{{marja[1]}}</td>
+            <td>{{marja[2]}}</td>
+            <td>{{marja[3]}}</td>
+            <td>{{marja[4]}}</td>
+            <td>{{marja[5]}}</td>
         </tr>
         {% endfor %}
         {% block lisaaMarja %}
