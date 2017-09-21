@@ -51,4 +51,24 @@ class Marjastaja extends BaseModel {
         return null;
     }
     
+    public static function findBySuosikkimarja($marja_id){
+        // Kysely, jossa katsotaan Marjastaja-taulua Suosikkimarja- ja marjataulujen perusteella.
+        $query = DB::connection()->prepare('SELECT * FROM Marjastaja WHERE id=:id LIMIT 1');
+        $query->execute(array('id'=> $id));
+        $row = $query->fetch();
+        
+        if ($row){
+            $marjastaja = new Marjastaja(array(
+                'id' => $row['id'],
+                'kayttajatunnus' => $row['kayttajatunnus'],
+                'salasana' => $row['salasana'],
+                'etunimi' => $row['etunimi'],
+                'sukunimi' => $row['sukunimi']
+            ));
+        
+            return $marjastaja;
+        }
+        return null;
+    }
+    
 }

@@ -28,13 +28,12 @@ CREATE TABLE Kaynti(
 );
 
 -- Liitostaulu Marjastajan ja Marjan välillä --
-CREATE TABLE Marjastajamarja(
+CREATE TABLE Suosikkimarja(
     marjastaja_id INTEGER REFERENCES Marjastaja(id),
     marja_id INTEGER REFERENCES Marja(id)
 );
 
--- Liitostaulu Marjan ja Kaynnin välillä --
-CREATE TABLE Marjakaynti(
+CREATE TABLE Marjasaalis(
     marja_id INTEGER REFERENCES Marja(id),
     kaynti_id INTEGER REFERENCES Kaynti(id),
     maara DECIMAL,

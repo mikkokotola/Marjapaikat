@@ -8,6 +8,23 @@
     <li><strong>Poimineiden marjastajien lkm kuluva vuosi: </strong> 5</li>
     <li><strong>Poimineiden marjastajien lkm koko historia: </strong> 7</li>    
 </ul>
+<h2>Käyttäjät, joiden suosikki tämä marja on</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nimi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for kayttaja in suosikkikayttajat %}
+        <tr>
+            <td>{{kayttaja.marjastaja_id}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 <h2>Kärkipoimijat</h2>
 <table class="table table-bordered table-striped">
     <thead>

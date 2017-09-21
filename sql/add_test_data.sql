@@ -37,22 +37,22 @@ INSERT INTO Kaynti (id, paikka_id, aika) VALUES (9, 4, NOW());
 INSERT INTO Kaynti (id, paikka_id, aika) VALUES (10, 4, NOW());
 INSERT INTO Kaynti (id, paikka_id, aika) VALUES (11, 4, NOW());
 
--- Marjastajamarja-taulun testidata --
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (1, 1);
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (1, 2);
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (1, 3);
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (2, 1);
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (2, 2);
-INSERT INTO Marjastajamarja (marjastaja_id, marja_id) VALUES (3, 3);
+-- Suosikkimarja-taulun testidata --
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (1, 1);
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (1, 2);
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (1, 3);
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (2, 1);
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (2, 2);
+INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (3, 3);
 
--- Marjakaynti-taulun testidata --
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 1, 2.0, 'Erittäin hyviä marjoja!');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 1, 3.0, 'Todella hyviä marjoja!');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (3, 1, 4.0, 'Aika sateista oli, joten marja aika märkiä.');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 2, 2.1, 'Isoja olivat');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 2, 0.2, 'Todella suuri esiintymä!');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (3, 2, 0.3, 'Pieniä marjoja.');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 3, 1.4, 'Taas oli hyvin.');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 8, 3.3, 'Jatkoin siitä mihin edellisellä käynnillä jäin.');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 8, 4.0, 'Erittäin hyviä marjoja!');
-INSERT INTO Marjakaynti (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 9, 0.0, 'En poiminut ollenkaan, olivat raakoja.');
+-- Marjasaalis-taulun testidata --
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 1, 2.0, 'Erittäin hyviä marjoja!');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 1, 3.0, 'Todella hyviä marjoja!');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (3, 1, 4.0, 'Aika sateista oli, joten marja aika märkiä.');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 2, 2.1, 'Isoja olivat');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 2, 0.2, 'Todella suuri esiintymä!');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (3, 2, 0.3, 'Pieniä marjoja.');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 3, 1.4, 'Taas oli hyvin.');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 8, 3.3, 'Jatkoin siitä mihin edellisellä käynnillä jäin.');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (2, 8, 4.0, 'Erittäin hyviä marjoja!');
+INSERT INTO Marjasaalis (marja_id, kaynti_id, maara, kuvaus) VALUES (1, 9, 0.0, 'En poiminut ollenkaan, olivat raakoja.');
