@@ -29,9 +29,9 @@ class MarjaController extends BaseController {
     public static function show($id){
         $marja = Marja::find($id);
         //$suosikkimarjat = Suosikkimarja::findByMarja($id);
-        //KESKEN $suosikkikayttajat = Suosikkikayttajat::
+        $suosikkikayttajat = Marjastaja::findBySuosikkimarja($id);
         //KESKEN View::make('marja/marja.html', array('marja' => $marja, 'suosikkikayttajat' => $suosikkikayttajat));
-        View::make('marja/marja.html', array('marja' => $marja));
+        View::make('marja/marja.html', array('marja' => $marja, 'suosikkikayttajat' => $suosikkikayttajat));
     }
     
     
