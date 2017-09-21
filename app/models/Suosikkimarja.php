@@ -5,7 +5,7 @@
  *
  * @author mkotola
  */
-class Suosikkimarja {
+class Suosikkimarja extends BaseModel{
     public $marjastaja_id, $marja_id;
 
     public function __construct($attributes) {

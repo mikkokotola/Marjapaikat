@@ -7,6 +7,7 @@
  */
 
 class MarjaController extends BaseController {
+       
     public static function index(){
         $marjat = Marja::all();
         View::make('marja/marjat.html', array('marjat' => $marjat));
@@ -29,7 +30,12 @@ class MarjaController extends BaseController {
     public static function show($id){
         $marja = Marja::find($id);
         $suosikkikayttajat = Marjastaja::findBySuosikkimarja($id);
-        View::make('marja/marja.html', array('marja' => $marja, 'suosikkikayttajat' => $suosikkikayttajat));
+        $marjanMaaraKokoHistoria = Marjasaalis::maaraKokohistoriaByMarja($id);
+        View::make('marja/marja.html', array(
+            'marja' => $marja, 
+            'suosikkikayttajat' => $suosikkikayttajat,
+            'marjanMaaraKokoHistoria' => $marjanMaaraKokoHistoria
+        ));
     }
     
     
