@@ -24,49 +24,21 @@
     </tbody>
 </table>
 
-<h2>Marjaa poimineet käyttäjät / VÄLIAIKAINEN</h2>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Nimi</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for kayttaja in poimineetKayttajatByVuosi %}
-        <tr>
-            <td>{{kayttaja.etunimi}} {{kayttaja.sukunimi}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
-
-<h2>Kärkipoimijat</h2>
+<h2>Kärkipoimijat kuluvana vuonna</h2>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Nimi</th>
             <th>Poimittu määrä (kg) kuluva vuosi</th>
-            <th>Poimittu määrä (kg) koko historia</th>
         </tr>
     </thead>
     <tbody>
+        {% for poimija in marjanTopPoimijat %}
         <tr>
-            <td>Jaakko Arhippa</td>
-            <td>20.0</td>
-            <td>40.0</td>
+            <td>{{poimija->etunimi}} {{poimija->sukunimi}}</td>
+            <td>{{poimija->saaliinMaara}}</td>
         </tr>
-        <tr>
-            <td>Kati Sademies</td>
-            <td>15.0</td>
-            <td>30.0</td>
-        </tr>
-        <tr>
-            <td>Tero Tatti</td>
-            <td>2.0</td>
-            <td>2.0</td>
-        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

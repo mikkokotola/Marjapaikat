@@ -108,6 +108,26 @@ class Marjastaja extends BaseModel {
         }
         return $marjastajat;
     }
+    
+    public static function karkipoimijatByMarjaAndVuosi($marja_id, $vuosi) {
+        // Kysely, jossa haetaan tiettyä marjaa tiettynä vuonna poimineet uniikit käyttäjät saaliin määrän mukaisessa järjestyksessä. Palauttaa taulukon, jossa etunimi, sukunimi, poimittu määrä 
+        // annettuna vuonna ja poimittu määrä koko historian aikana.
+        $query = DB::connection()->prepare('SELECT mj.etunimi AS etun, mj.sukunimi AS sukun, SUM(ms.maara) AS saalis FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '
+                . 'WHERE mj.id = p.marjastaja_id AND p.id = k.paikka_id AND k.id = ms.kaynti_id AND ms.marja_id = :marja_id AND extract(year from k.aika)=:vuosi '
+                . 'GROUP BY mj.id ORDER BY SUM(ms.maara) DESC');
+        $query->execute(array('marja_id' => $marja_id, 'vuosi' => $vuosi));
+        $rows = $query->fetchAll();
+        $karkipoimijat = array();
+
+        foreach ($rows as $row) {
+            $karkipoimijat[] = (array(
+                'etunimi' => $row['etun'],
+                'sukunimi' => $row['sukun'],
+                'saalis' => $row['saalis']
+            ));
+        }
+        return $karkipoimijat;
+    }
 
 
 }

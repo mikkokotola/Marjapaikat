@@ -24,13 +24,17 @@
             <td><a href="{{base_path}}/marja/{{marja[0]}}">{{marja[1]}}</td>
             <td>{{marja[2]}}</td>
             <td>{{marja[3]}}</td>
-            <td>{{marja[4]}}</td>
-            <td>{{marja[5]}}</td>
-        </tr>
-        {% endfor %}
-        {% block lisaaMarja %}
-        {% endblock %}
-    </tbody>
+<td>{{marja[4]}}</td>
+    <td>{{marja[5]}}</td>
+</tr>
+{% endfor %}
+{% block lisaaMarja %}
+{% endblock %}
+</tbody>
 </table>
+{% for poimija in marjanTopPoimijat %}
+        {{poimija->etunimi}} {{poimija->sukunimi}} {{poimija->saaliinMaara}}
+       
+{% endfor %}
 <a href="{{base_path}}/marjat/new" class="btn btn-primary" >Lisää uusi marja</a>
 {% endblock %}
