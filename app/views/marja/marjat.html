@@ -32,9 +32,5 @@
 {% endblock %}
 </tbody>
 </table>
-{% for poimija in marjanTopPoimijat %}
-        {{poimija->etunimi}} {{poimija->sukunimi}} {{poimija->saaliinMaara}}
-       
-{% endfor %}
 <a href="{{base_path}}/marjat/new" class="btn btn-primary" >Lisää uusi marja</a>
 {% endblock %}

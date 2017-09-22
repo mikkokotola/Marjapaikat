@@ -38,7 +38,8 @@ class MarjaController extends BaseController {
         $marjanMaaraKokoHistoria = Marjasaalis::maaraKokohistoriaByMarja($marja_id);
         $marjanMaaraKuluvaVuosi = Marjasaalis::maaraByMarjaAndVuosi($marja_id, date('Y'));
         
-        $marjanTopPoimijat = Marjastaja::karkipoimijatByMarjaAndVuosi($marja_id, date('Y'));
+        // JOTAIN ONGELMAA, KORJAA TÄMÄ.
+        //$marjanTopPoimijat = Marjastaja::karkipoimijatByMarjaAndVuosi($marja_id, date('Y'));
               
 //        // Tehdään taulukko tänä vuonna poimineiden marjastajien poimituista marjamääristä näkymää varten.
 //        $marjanTopPoimijat = array();
@@ -60,8 +61,8 @@ class MarjaController extends BaseController {
             'poimineetKayttajatLkmKuluvaVuosi' => $poimineetKayttajatLkmKuluvaVuosi,
             'poimineetKayttajatLkmKokoHistoria' => $poimineetKayttajatLkmKokoHistoria,
             'marjanMaaraKokoHistoria' => $marjanMaaraKokoHistoria,
-            'marjanMaaraKuluvaVuosi' => $marjanMaaraKuluvaVuosi,
-            'marjanTopPoimijat' => $marjanTopPoimijat
+            'marjanMaaraKuluvaVuosi' => $marjanMaaraKuluvaVuosi
+                //, 'marjanTopPoimijat' => $marjanTopPoimijat
         ));
     }
     
