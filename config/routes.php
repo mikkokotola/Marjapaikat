@@ -10,12 +10,12 @@
   
   // Poistettava lopuksi, testireitti.
   $routes->get('/marjastaja/paikat', function() {
-    HelloWorldController::paikat();
+    PaikkaController::paikat();
   });
   
-  // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.
+  // Poistettava lopuksi, testireitti.
   $routes->get('/marjastaja/paikka', function() {
-    HelloWorldController::paikka();
+      PaikkaController::paikka();
   });
 
   // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.

@@ -30,7 +30,7 @@ class HelloWorldController extends BaseController {
     }
     
     public static function paikka() {
-        View::make('suunnitelmat/paikka.html');
+        View::make('paikka/paikka.html');
     }
 
 }
