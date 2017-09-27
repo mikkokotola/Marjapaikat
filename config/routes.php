@@ -9,14 +9,16 @@
   });
   
   // Poistettava lopuksi, testireitti.
+  $routes->get('/marjastaja/paikka', function() {
+      PaikkaController::show(1);
+  });
+  
+  // Poistettava lopuksi, testireitti.
   $routes->get('/marjastaja/:id/paikat', function($id) {
     PaikkaController::paikat($id);
   });
   
-  // Poistettava lopuksi, testireitti.
-  $routes->get('/marjastaja/paikka', function() {
-      PaikkaController::paikka();
-  });
+  
 
   // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.
   $routes->get('/marja', function() {

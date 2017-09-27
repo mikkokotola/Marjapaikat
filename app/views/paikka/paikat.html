@@ -10,12 +10,13 @@
 
 <button class="btn btn-primary">Lisää uusi paikka</button>
 
-
-<div style="display: none;" id="paikat">
-
-{% for i in 0..sizeof({{paikat}}) %}
-    echo '<span id="paikat.'.i.'">'.{{paikat[i]}}.'</span>';
-{% endfor %}
+<div style="display: none;" id="paikkalista">
+    <span id="paikkalista_pituus">{{paikat|length}}</span>;
+    {% for paikka in paikat  %}
+    <span id="{{loop.index}}_nimi">{{paikka.nimi}}</span>;
+    <span id="{{loop.index}}_p">{{paikka.p}}</span>;
+    <span id="{{loop.index}}_i">{{paikka.i}}</span>;
+    {% endfor %}
 
 </div>
 
@@ -26,8 +27,15 @@
             zoom: 12,
         };
         var map = new google.maps.Map(document.getElementById("map"), mapProp);
-        var markerinSijainti = {lat: "{{paikka.p}}", lng: "{{paikka.i}}"};
-        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikka.nimi}}'});
+        
+        var markers = new Array();
+
+        for (i = 1; i <= parseInt(document.getElementById('paikkalista_pituus').innerHTML); i++) {
+            var markerinSijainti = {lat: parseFloat(document.getElementById(i + '_p').innerHTML), lng: parseFloat(document.getElementById(i + '_i').innerHTML)};
+            var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML});
+            marker.setMap(map); 
+            markers.push(marker);
+        }
 
         google.maps.event.addListener(map, 'click', function (event) {
             lisaaMerkki(map, event.latLng);
@@ -51,12 +59,8 @@
 
 
 
-
-
-
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL0wY9vQo3WSVsc0cnedWrjtjO9HLlo0g&callback=initMap"
 async defer></script>
-
 
 
 {% endblock %}
