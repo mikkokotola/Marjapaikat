@@ -124,7 +124,7 @@
         var map = new google.maps.Map(document.getElementById("mapSmall"), mapProp);
 
         var markerinSijainti = {lat: 60.204558, lng: 24.961813};
-        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: 'Marjapaikka A'});
+        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikka.nimi}}'});
         var infowindow = new google.maps.InfoWindow({
             content: "{{paikka.nimi}}"
         });
