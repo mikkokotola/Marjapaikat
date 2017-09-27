@@ -1,12 +1,13 @@
    
 {% extends "/marja/marjat.html" %}
 {% block lisaaMarja %}
+
 <tr>
     <td>
         <form method="post" action="{{base_path}}/marjat/new" style="display: inline-block;">
             <div class="form-group">
                 <label>Uusi marja</label>
-                <input name="nimi" class="form-control" type="text">
+                <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
             </div>
 
             <div class="form-group">

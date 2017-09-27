@@ -12,6 +12,7 @@ class Marja extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_name');
     }
 
     public static function all() {
@@ -50,6 +51,19 @@ class Marja extends BaseModel {
         $query->execute(array('nimi' => $this->nimi));
         $row = $query->fetch();
         $this->id = $row['id'];
+    }
+
+    public function validate_name() {
+        $errors = array();
+        $errors[] = $this->validate_string_length($this->nimi, 2);
+        $marjat = $this->all();
+        foreach ($marjat as $marja) {
+            if ($marja->nimi === $this->nimi) {
+                $errors[] = "Tämän niminen marja on jo olemassa.";
+            }
+        }
+
+        return $errors;
     }
 
 }
