@@ -50,5 +50,23 @@ class Paikka extends BaseModel{
         }
         return null;
     }
+    
+    public static function findByKayttaja($id) {
+        $query = DB::connection()->prepare('SELECT * FROM Paikka WHERE marjastaja_id=:id');
+        $query->execute(array('id'=> $id));
+        $rows = $query->fetchAll();
+        $paikat = array();
+        
+        foreach ($rows as $row) {
+            $paikat[] = new Paikka(array(
+                'id' => $row['id'],
+                'marjastaja_id' => $row['marjastaja_id'],
+                'p' => $row['p'],
+                'i' => $row['i'],
+                'nimi' => $row['nimi']
+            ));
+        }
+        return $paikat;
+    }
 
 }
