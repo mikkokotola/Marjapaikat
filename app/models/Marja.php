@@ -53,6 +53,20 @@ class Marja extends BaseModel {
         $this->id = $row['id'];
     }
 
+    public function delete() {
+        $query = DB::connection()->prepare('DELETE FROM Marja WHERE id = :id');
+        $query->execute(array('id' => $this->id));
+    }
+    
+    public function rename($nimi) {
+        $this->nimi = $nimi;
+    }
+    
+    public function saveChangedName() {
+        $query = DB::connection()->prepare('UPDATE Marja SET nimi = :nimi WHERE id = :id;');
+        $query->execute(array('nimi' => $this->nimi, 'id' => $this->id));
+    }
+    
     public function validate_name() {
         $errors = array();
         $newerrors = $this->validate_string_length($this->nimi, 2);
@@ -63,7 +77,7 @@ class Marja extends BaseModel {
         $marjat = $this->all();
         foreach ($marjat as $marja) {
             if ($marja->nimi === $this->nimi) {
-                $errors[] = "Tämän niminen marja on jo olemassa.";
+                $errors[] = "Tämänniminen marja on jo olemassa.";
             }
         }
 

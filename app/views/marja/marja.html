@@ -1,12 +1,18 @@
    
 {% extends "base.html" %}
 {% block content %}
-<h1>{{marja.nimi}}</h1>
+<h1 id="marjannimi">{{marjatiedot.marja.nimi}}</h1>
+<a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>
+<form method="post" action="{{base_path}}/marja/{{marjatiedot.marja.id}}/delete" style="display: inline-block;">
+  <button type="submit" class="btn btn-danger">Poista</button>
+</form>
+{% block muokkaaMarjaa %}
+{% endblock %}
 <ul>
-    <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong>{{marjanMaaraKuluvaVuosi}} kg</li>
-    <li><strong>Poimittu määrä (kg) koko historia: </strong>{{marjanMaaraKokoHistoria}} kg</li>
-    <li><strong>Poimineiden marjastajien lkm kuluva vuosi: </strong> {{poimineetKayttajatLkmKuluvaVuosi}}</li>
-    <li><strong>Poimineiden marjastajien lkm koko historia: </strong>{{poimineetKayttajatLkmKokoHistoria}}</li>    
+    <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong>{{marjatiedot.marjanMaaraKuluvaVuosi}} kg</li>
+    <li><strong>Poimittu määrä (kg) koko historia: </strong>{{marjatiedot.marjanMaaraKokoHistoria}} kg</li>
+    <li><strong>Poimineiden marjastajien lkm kuluva vuosi: </strong> {{marjatiedot.poimineetKayttajatLkmKuluvaVuosi}}</li>
+    <li><strong>Poimineiden marjastajien lkm koko historia: </strong>{{marjatiedot.poimineetKayttajatLkmKokoHistoria}}</li>    
 </ul>
 <h2>Käyttäjät, joiden suosikki tämä marja on</h2>
 <table class="table table-bordered table-striped">
@@ -16,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for kayttaja in suosikkikayttajat %}
+        {% for kayttaja in marjatiedot.suosikkikayttajat %}
         <tr>
             <td>{{kayttaja.etunimi}} {{kayttaja.sukunimi}}</td>
         </tr>
@@ -33,7 +39,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for poimija in marjanTopPoimijat %}
+        {% for poimija in marjatiedot.marjanTopPoimijat %}
         <tr>
             <td>{{poimija.etunimi}} {{poimija.sukunimi}}</td>
             <td>{{poimija.saalis}}</td>
