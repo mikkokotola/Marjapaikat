@@ -22,7 +22,7 @@ class BaseModel {
 
         foreach ($this->validators as $validator) {
             $newerrors = $this->{$validator}();
-            if (!empty($newerrors[0])) {
+            if (!empty($newerrors)) {
                 $errors = array_merge($errors, $newerrors);
             }
         }

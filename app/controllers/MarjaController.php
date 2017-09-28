@@ -31,15 +31,15 @@ class MarjaController extends BaseController {
             // Lisättävä marja on validi.
             $marja->save();
             
-            Redirect::to('/');
-            //Redirect::to('/marjat', array('message' => 'Marja lisätty!'));
+            //Redirect::to('/');
+            Redirect::to('/marjat', array('message' => 'Marja lisätty!'));
         } else {
             // Marjassa oli vikaa, ei lisätä.
-            Kint::dump($marja);
-        Kint::dump($errors);
-//            $marjadata = self::haeMarjadata();
-//            View::make('marja/marjat_lisaamarja.html', array('errors' => $errors, 'marjadata' => $marjadata, 'attributes' => $attributes));
-            //Redirect::to('/');
+            //Kint::dump($marja);
+            //Kint::dump($errors);
+            $marjadata = self::haeMarjadata();
+            View::make('marja/marjat_lisaamarja.html', array('errors' => $errors, 'marjadata' => $marjadata, 'attributes' => $attributes));
+            
         }
 
         

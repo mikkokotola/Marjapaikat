@@ -55,7 +55,11 @@ class Marja extends BaseModel {
 
     public function validate_name() {
         $errors = array();
-        $errors[] = $this->validate_string_length($this->nimi, 2);
+        $newerrors = $this->validate_string_length($this->nimi, 2);
+        if (!empty($newerrors)) {
+            $errors = array_merge($errors, $newerrors);
+        }
+
         $marjat = $this->all();
         foreach ($marjat as $marja) {
             if ($marja->nimi === $this->nimi) {
