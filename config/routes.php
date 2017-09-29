@@ -9,15 +9,19 @@ $routes->get('/marjat', function() {
 });
 
 // Poistettava lopuksi, testireitti.
-$routes->get('/marjastaja/paikka', function() {
-    PaikkaController::show(1);
-});
+//$routes->get('/marjastaja/paikka', function() {
+//    PaikkaController::show(1);
+//});
 
-// Poistettava lopuksi, testireitti.
 $routes->get('/marjastaja/:id/paikat', function($id) {
     PaikkaController::paikat($id);
 });
 
+$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
+    // TO DO: Testattava, että marjastaja on oikea (että paikka liittyy tähän marjastajaan).
+
+    PaikkaController::show($marjastaja_id, $paikka_id);
+});
 
 
 // Poistettava lopuksi, testireitti. Vastaava oikea on toteutettu.
@@ -38,8 +42,14 @@ $routes->get('/hiekkalaatikko', function() {
     HelloWorldController::sandbox();
 });
 
+// Kirjautumislomakkeen esittäminen
 $routes->get('/login', function() {
-    HelloWorldController::login();
+    MarjastajaController::login();
+});
+
+// Kirjautumisen käsittely
+$routes->post('/login', function() {
+    MarjastajaController::handle_login();
 });
 
 
@@ -60,10 +70,5 @@ $routes->post('/marja/rename', function() {
     MarjaController::renameMarja();
 });
 
-$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
-    // TO DO: Testattava, että marjastaja on oikea (että paikka liittyy tähän marjastajaan).
-
-    PaikkaController::show($paikka_id);
-});
 
 

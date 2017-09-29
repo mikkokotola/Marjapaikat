@@ -11,7 +11,6 @@ INSERT INTO Marja (id, nimi) VALUES (2, 'Mustikka');
 INSERT INTO Marja (id, nimi) VALUES (3, 'Kanttarelli');
 
 -- Paikka-taulun testidata --
--- ONGELMA: Miten linkittää automaattisesti luotuihin SERIAL-tyyppisiin id-numeroihin testidatassa? RATKAISTU lisäämällä testidataan manuaalisesti kaikki SERIAL-tunnukset.
 INSERT INTO Paikka (id, marjastaja_id, p, i, nimi) VALUES (1, 1, 61.707724, 25.705254, 'Itäjärvi');
 INSERT INTO Paikka (id, marjastaja_id, p, i, nimi) VALUES (2, 1, 61.807724, 25.805254, 'Kumpare');
 INSERT INTO Paikka (id, marjastaja_id, p, i, nimi) VALUES (3, 1, 62.007724, 25.705254, 'Kangas');

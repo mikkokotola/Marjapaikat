@@ -1,13 +1,15 @@
-   
+{% import "macros/forms.html" as forms %}   
 {% extends "base.html" %}
 {% block content %}
 <h1 id="marjannimi">{{marjatiedot.marja.nimi}}</h1>
-<a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>
-<form method="post" action="{{base_path}}/marja/{{marjatiedot.marja.id}}/delete" style="display: inline-block;">
-  <button type="submit" class="btn btn-danger">Poista</button>
-</form>
+{% if user_logged_in %}
+    <a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>
+    {{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/delete")}}
+{% endif %}
+
 {% block muokkaaMarjaa %}
 {% endblock %}
+
 <ul>
     <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong>{{marjatiedot.marjanMaaraKuluvaVuosi}} kg</li>
     <li><strong>Poimittu määrä (kg) koko historia: </strong>{{marjatiedot.marjanMaaraKokoHistoria}} kg</li>
