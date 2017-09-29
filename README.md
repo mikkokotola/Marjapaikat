@@ -5,6 +5,11 @@ Yleisiä linkkejä:
 * [Linkki sovellukseeni](http://mkotola.users.cs.helsinki.fi/marjapaikat/)
 * [Linkki dokumentaatiooni](https://github.com/mikkokotola/Marjapaikat/blob/master/doc/dokumentaatio.pdf)
 
+Testitunnukset:
+Sovellusta voi testata kirjautuneena käyttäjänä seuraavilla tunnuksilla:
+Käyttäjänimi: kalle1
+Salasana: ahven
+
 ## Työn aihe
 
 Marjapaikat. Sovellus tarjoaa käyttäjille palvelun marja- ja sienipaikkojensa
@@ -17,33 +22,29 @@ marjoista sekä muiden käyttäjien poimintamääriä.
 Näkymät:
 Marjat:
 /index.html
-Esimerkkinäkymä: http://mkotola.users.cs.helsinki.fi/marjapaikat/
 Kuvaus: Aloitusnäkymä, jossa listataan kaikki marjat ja näytetään poimintatilastot. 
 Ei edellytä kirjautumista. Sivulla on kirjautuneelle käyttäjälle myös "Lisää marja"-nappi,
 jonka kautta voi lisätä järjestelmään uuden marjan.
 
 Marja:
 /marja/[Marja.id]
-Esimerkkinäkymä: http://mkotola.users.cs.helsinki.fi/marjapaikat/marja
 Kuvaus: Yksittäisen marjan näkymä, jossa näytetään marjan tilastot ja kärkipoimijat. 
-Ei edellytä kirjautumista.
+Ei edellytä kirjautumista. Kirjautuneelle käyttäjälle näytetään marjan muokkaus- ja poistotoiminnot.
 
 Kirjautuminen: 
 /login
-Esimerkkinäkymä: http://mkotola.users.cs.helsinki.fi/marjapaikat/login
 Kuvaus: Kirjautumisnäkymä.
 
 Paikkojen selailu:
-/[Marjastaja.id]/
-Esimerkkinäkymä: http://mkotola.users.cs.helsinki.fi/marjapaikat/marjastaja/paikat
+/marjastaja/[Marjastaja.id]/paikat
 Kuvaus: Käyttäjän omien paikkojen selailusivu. Google Maps -APIa käyttävä karttanäkymä. 
-Käyttäjä voi selailla omia paikkojaan ja lisätä uusia paikkoja.
+Käyttäjä voi selailla omia paikkojaan ja lisätä uusia paikkoja (lisäystä ei vielä toteutettu).
 
 Paikan näkymä:
-/[Marjastaja.id]/[Paikka.id]/
-Esimerkkinäkymä: http://mkotola.users.cs.helsinki.fi/marjapaikat/marjastaja/paikka
-Kuvaus: Käyttäjän marjapaikan sivu. Näyttää paikan koordinaatit sekä käynnit ja 
+/marjastaja/[Marjastaja.id]/paikat/[Paikka.id]/
+Kuvaus: Käyttäjän marjapaikan sivu. Näyttää paikan kartalla, paikan koordinaatit sekä käynnit ja 
 käynneillä poimitut marjat sekä marjakohtaiset määrät ja kommentit. Käyntejä ja 
 käynnin marjamerkintöjä voi lisätä ja koordinaatteja, käyntien ajankohtia ja käyntien 
 marjakohtaisia tietoja voi muokata. Marjamerkintöjä ja käyntejä voi poistaa. 
-Käyttäjä voi myös poistaa koko marjapaikan.
+Käyttäjä voi myös poistaa koko marjapaikan. Paikkojen, käyntien ja marjasaaliiden muokkausta
+ja poistoa ei ole vielä toteutettu.
