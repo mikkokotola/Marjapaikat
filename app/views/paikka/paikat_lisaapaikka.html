@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{marjastaja.etunimi}}n marjapaikat</h1>
+
+<button class="btn btn-danger">Näkymä on käyttäjäkohtainen ja edellyttää kirjautumista</button>
+<button class="btn btn-danger">Linkkejä tältä listaussivulta yksittäisten paikkojen sivulle ei vielä toteutettu: käytä suoria urleja muotoa ".../marjastaja/1/paikat/1"</button>
+
+<div id="map"></div>
+
+<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallenna" style="display: inline-block;">
+    <div class="form-group">
+        <label>Uusi paikka</label>
+        <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
+        <input name="p" class="form-control" value="{{attributes.p}}" type="text">
+        <input name="i" class="form-control" value="{{attributes.i}}" type="text">
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Tallenna</button>
+    </div>
+</form>
+
+
+<div id="form">
+    <table>
+        <tr><td>Name:</td> <td><input type='text' id='name'/> </td> </tr>
+        <tr><td></td><td><input type='button' value='Tallenna' onclick='saveData()'/></td></tr>
+    </table>
+</div>
+
+
+<div style="display: none;" id="paikkalista">
+    <span id="paikkalista_pituus">{{paikat|length}}</span>;
+    {% for paikka in paikat  %}
+    <span id="{{loop.index}}_nimi">{{paikka.nimi}}</span>;
+    <span id="{{loop.index}}_p">{{paikka.p}}</span>;
+    <span id="{{loop.index}}_i">{{paikka.i}}</span>;
+    {% endfor %}
+
+</div>
+
+<script>
+    function initMap() {
+        var mapProp = {
+            center: new google.maps.LatLng("{{paikat[0].p}}", "{{paikat[0].i}}"),
+            zoom: 12,
+        };
+        var map = new google.maps.Map(document.getElementById("map"), mapProp);
+
+        var markers = new Array();
+        var marker;
+
+        for (i = 1; i <= parseInt(document.getElementById('paikkalista_pituus').innerHTML); i++) {
+            var markerinSijainti = {lat: parseFloat(document.getElementById(i + '_p').innerHTML), lng: parseFloat(document.getElementById(i + '_i').innerHTML)};
+            var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML});
+            marker.setMap(map);
+            markers.push(marker);
+        }
+
+        infowindow = new google.maps.InfoWindow({
+            content: document.getElementById('form')
+        });
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.open(map, marker);
+        });
+
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            marker = new google.maps.Marker({
+                position: event.latLng,
+                map: map
+            });
+            infowindow.open(map, marker);
+
+        });
+
+    }
+
+    function saveData() {
+        var name = escape(document.getElementById('name').value);
+        var latlng = marker.getPosition();
+        var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallenna?name=' + name + '&lat=' + latlng.lat() + '&lng=' + latlng.lng();
+
+        downloadUrl(url, function (data, responseCode) {
+
+            if (responseCode == 200 && data.length <= 1) {
+                infowindow.close();
+            }
+        });
+    }
+
+    function downloadUrl(url, callback) {
+        var request = window.ActiveXObject ?
+                new ActiveXObject('Microsoft.XMLHTTP') :
+                new XMLHttpRequest;
+
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                request.onreadystatechange = doNothing;
+                callback(request.responseText, request.status);
+            }
+        };
+
+        request.open('GET', url, true);
+        request.send(null);
+    }
+
+    function doNothing() {
+    }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL0wY9vQo3WSVsc0cnedWrjtjO9HLlo0g&callback=initMap"
+async defer></script>
+
+
+{% endblock %}

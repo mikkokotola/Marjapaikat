@@ -9,7 +9,8 @@
 
 <div id="map"></div>
 
-<button class="btn btn-primary">Lisää uusi paikka</button>
+<a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/new" class="btn btn-primary" >Lisää uusi paikka</a>
+<!--<button class="btn btn-primary">Lisää uusi paikka</button>-->
 
 <div style="display: none;" id="paikkalista">
     <span id="paikkalista_pituus">{{paikat|length}}</span>;
@@ -17,6 +18,7 @@
     <span id="{{loop.index}}_nimi">{{paikka.nimi}}</span>;
     <span id="{{loop.index}}_p">{{paikka.p}}</span>;
     <span id="{{loop.index}}_i">{{paikka.i}}</span>;
+    <span id="{{loop.index}}_url">{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikka.id}}</span>;
     {% endfor %}
 
 </div>
@@ -28,37 +30,22 @@
             zoom: 12,
         };
         var map = new google.maps.Map(document.getElementById("map"), mapProp);
-        
+
         var markers = new Array();
+
 
         for (i = 1; i <= parseInt(document.getElementById('paikkalista_pituus').innerHTML); i++) {
             var markerinSijainti = {lat: parseFloat(document.getElementById(i + '_p').innerHTML), lng: parseFloat(document.getElementById(i + '_i').innerHTML)};
-            var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML});
-            marker.setMap(map); 
+            var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML, url: document.getElementById(i + '_url').innerHTML});
+            google.maps.event.addListener(marker, 'click', function () {
+                window.location.href = marker.url;
+            });
+            marker.setMap(map);
             markers.push(marker);
         }
 
-        google.maps.event.addListener(map, 'click', function (event) {
-            lisaaMerkki(map, event.latLng);
-        });
     }
-
-
-    function lisaaMerkki(map, location) {
-        var marker = new google.maps.Marker({
-            position: location,
-            map: map
-        });
-        var infowindow = new google.maps.InfoWindow({
-            content: 'Latitude: ' + location.lat() +
-                    '<br>Longitude: ' + location.lng()
-        });
-        infowindow.open(map, marker);
-    }
-
 </script>
-
-
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL0wY9vQo3WSVsc0cnedWrjtjO9HLlo0g&callback=initMap"
 async defer></script>

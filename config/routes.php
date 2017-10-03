@@ -33,6 +33,20 @@ $routes->get('/marjastaja/:id/paikat', function($id) {
     PaikkaController::paikat($id);
 });
 
+$routes->get('/marjastaja/:id/paikat/new', function($id) {
+    PaikkaController::lisaaPaikka($id);
+});
+
+// Uuden paikan tallentaminen googlemaps-kartalta tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
+$routes->get('/marjastaja/:id/paikat/tallenna', function($id) {
+    PaikkaController::tallennaPaikka($id);
+});
+
+// Uuden paikan tallentaminen lomakkeella.
+$routes->post('/marjastaja/:id/paikat/tallenna', function($id) {
+    PaikkaController::tallennaPaikkaLomake($id);
+});
+
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
     // TO DO: Testattava, että marjastaja on oikea (että paikka liittyy tähän marjastajaan).
 

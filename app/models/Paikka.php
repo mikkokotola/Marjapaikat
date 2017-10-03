@@ -12,6 +12,7 @@ class Paikka extends BaseModel{
     
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_name', 'validate_p', 'validate_i');
     }
     
     public static function all() {
@@ -67,6 +68,28 @@ class Paikka extends BaseModel{
             ));
         }
         return $paikat;
+    }
+    
+    public function validate_name() {
+        $errors = array();
+        $newerrors = $this->validate_string_length($this->nimi, 1);
+        if (!empty($newerrors)) {
+            $errors = array_merge($errors, $newerrors);
+        }
+
+        return $errors;
+    }
+    
+    public function validate_p() {
+        $errors = array();
+        // Tarkastetaan, että koordinaatti oikeassa muodossa.
+        // Tarkastetaan, että koordinaatti oikealla välillä.
+        return $errors;
+        
+    }
+    
+    public function validate_i() {
+        
     }
 
 }
