@@ -16,12 +16,16 @@ class MarjaController extends BaseController {
 
     // Marjan lisäysnäkymä
     public static function lisaaMarja() {
+        // Kuka vain kirjautunut käyttäjä voi tallentaa uusia marjoja.
+        self::check_logged_in();
         $marjadata = self::haeMarjadata();
         View::make('marja/marjat_lisaamarja.html', array('marjadata' => $marjadata));
     }
 
     // Marjan tallentaminen (lomakkeen käsittely)
     public static function tallennaMarja() {
+        // Kuka vain kirjautunut käyttäjä voi tallentaa uusia marjoja.
+        self::check_logged_in();
         $params = $_POST;
         $attributes = array(
             'nimi' => $params['nimi']
@@ -43,12 +47,16 @@ class MarjaController extends BaseController {
 
     // Marjan muokkaamisnäkymä
     public static function rename($marja_id) {
+        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
+        self::check_logged_in();
         $marjatiedot = self::haeMarjandata($marja_id);
         View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot));
     }
 
     // Marjan uudelleennimeäminen (lomakkeen käsittely)
     public static function renameMarja() {
+        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
+        self::check_logged_in();
         $params = $_POST;
 
         $marja_id = $params['marja_id'];
@@ -74,6 +82,8 @@ class MarjaController extends BaseController {
 
     // Marjan poistaminen
     public static function delete($id) {
+        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
+        self::check_logged_in();
         $marja = Marja::find($id);
         // Kutsutaan Marja-luokan metodia delete, joka poistaa marjan sen id:llä
         $marja->delete();

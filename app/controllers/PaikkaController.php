@@ -17,7 +17,7 @@ class PaikkaController extends BaseController {
 
     // Tietyn marjastajan paikkojen listaaminen.
     public static function paikat($marjastaja_id) {
-        if (self::get_user_logged_in()->id == $marjastaja_id) {
+        if(self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::find($marjastaja_id);
             $paikat = Paikka::findByKayttaja($marjastaja_id);
 
@@ -35,7 +35,7 @@ class PaikkaController extends BaseController {
     // Yksittäisen paikan näyttäminen.
     public static function show($marjastaja_id, $paikka_id) {
         $paikka = Paikka::find($paikka_id);
-        if (self::get_user_logged_in()->id == $paikka->marjastaja_id && self::get_user_logged_in()->id == $marjastaja_id) {
+        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             View::make('paikka/paikka.html', array('paikka' => $paikka));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));

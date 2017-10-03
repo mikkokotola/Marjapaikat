@@ -6,7 +6,7 @@ class BaseController {
         // Katsotaan onko user-avain sessiossa
         if (isset($_SESSION['user'])) {
             $marjastaja_id = $_SESSION['user'];
-            $user = Marjastaja::find($marjastaja_id); 
+            $user = Marjastaja::find($marjastaja_id);
 
             return $user;
         }
@@ -16,8 +16,27 @@ class BaseController {
     }
 
     public static function check_logged_in() {
-        // Toteuta kirjautumisen tarkistus tähän.
-        // Jos käyttäjä ei ole kirjautunut sisään, ohjaa hänet toiselle sivulle (esim. kirjautumissivulle).
+        // Kirjautumisen tarkistus, onko käyttäjä kirjautunut millä tahansa tunnuksella.
+
+        if (!isset($_SESSION['user'])) {
+            Redirect::to('/login', array('message' => 'Kirjaudu ensin sisään'));
+        }
+    }
+    
+    public static function check_logged_in_user($user_id) {
+        // Kirjautumisen tarkistus, onko käyttäjä kirjautunut tietyllä tunnuksella.
+
+        if (!isset($_SESSION['user'])) {
+            Redirect::to('/login', array('message' => 'Kirjaudu ensin sisään'));
+        } else {
+            $currentUser = self::get_user_logged_in();
+            if ($currentUser->id == $user_id) {
+                return true;
+            } else {
+                Redirect::to('/login', array('message' => 'Kirjaudu ensin sisään'));
+            }
+            
+        }
     }
 
 }

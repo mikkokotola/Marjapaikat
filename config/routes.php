@@ -1,5 +1,21 @@
 <?php
 
+// Kirjautumislomakkeen esittäminen
+$routes->get('/login', function() {
+    MarjastajaController::login();
+});
+
+// Kirjautumisen käsittely
+$routes->post('/login', function() {
+    MarjastajaController::handle_login();
+});
+
+// Uloskirjautumisen käsittely
+$routes->post('/logout', function(){
+    MarjastajaController::logout();
+});
+
+
 $routes->get('/', function() {
     MarjaController::index();
 });
@@ -42,15 +58,6 @@ $routes->get('/hiekkalaatikko', function() {
     HelloWorldController::sandbox();
 });
 
-// Kirjautumislomakkeen esittäminen
-$routes->get('/login', function() {
-    MarjastajaController::login();
-});
-
-// Kirjautumisen käsittely
-$routes->post('/login', function() {
-    MarjastajaController::handle_login();
-});
 
 
 $routes->get('/marja/:id', function($id) {

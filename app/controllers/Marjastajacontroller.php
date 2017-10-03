@@ -6,6 +6,11 @@ class MarjastajaController extends BaseController {
         View::make('marjastaja/kirjaudu.html');
     }
 
+    public static function logout() {
+        $_SESSION['user'] = null;
+        Redirect::to('/', array('message' => 'Olet kirjautunut ulos!'));
+    }
+
     public static function handle_login() {
         $params = $_POST;
 
