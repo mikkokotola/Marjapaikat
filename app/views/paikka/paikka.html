@@ -1,4 +1,4 @@
-   
+{% import "macros/forms.html" as forms %}      
 {% extends "base.html" %}
 {% block content %}
 <h1>{{paikka.nimi}}</h1>
@@ -8,12 +8,18 @@
 
 
 <ul>
-    <li><strong>Marjastaja: </strong> N.N.</li>
+    <li><strong>Marjastaja: </strong>{{marjastaja.etunimi}} {{marjastaja.sukunimi}}</li>
     <li><strong>P: </strong> {{paikka.p}}</li>
     <li><strong>I: </strong> {{paikka.i}}</li>
 </ul>
-<button class="btn btn-primary">Muokkaa koordinaatteja</button>
-<button class="btn btn-danger">Poista paikka</button>
+
+{% block muokkaaPaikkaa %}
+{% endblock %}
+
+{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikka.id}/edit")}}
+{{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikka.id}/delete", "Poista paikka")}}
+<!--<button class="btn btn-primary">Muokkaa</button>
+<button class="btn btn-danger">Poista paikka</button>-->
 <h2>Käynnit</h2>
 <table>
 

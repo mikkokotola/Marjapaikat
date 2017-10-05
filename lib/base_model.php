@@ -30,14 +30,18 @@ class BaseModel {
         return $errors;
     }
 
-    public function validate_string_length($string, $length) {
+    public function validate_string_length($string, $lyhin, $pisin) {
 
         $errors = array();
         if ($string == '' || $string == null) {
             $errors[] = 'Syöte ei saa olla tyhjä';
         }
-        if (strlen($string) < $length) {
-            $errors[] = 'Nimen pituuden tulee olla vähintään ' . $length . ' merkkiä!';
+        if (strlen($string) < $lyhin) {
+            $errors[] = 'Syötteen pituuden tulee olla vähintään ' . $lyhin . ' merkkiä!';
+        }
+        
+        if (strlen($string) > $pisin) {
+            $errors[] = 'Syötteen pituuden tulee olla enintään ' . $pisin . ' merkkiä!';
         }
 
         return $errors;

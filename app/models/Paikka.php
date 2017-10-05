@@ -83,29 +83,69 @@ class Paikka extends BaseModel{
         
     }
     
+    public function saveChanged(){
+        $query = DB::connection()->prepare('UPDATE Paikka SET p = :p, i = :i, nimi = :nimi WHERE id = :id;');
+        $query->execute(array(
+            'id' => $this->id,
+            'p' => $this->p,
+            'i' => $this->i,
+            'nimi' => $this->nimi
+        ));
+        
+    }
+    
+    
+    
+    public function delete(){
+        // TOTEUTTAMATTA
+        
+        // Poistettava Marjasaaliit, Käynnit, Paikat ja Marjastajien viitteet
+        
+               
+        //$query = DB::connection()->prepare('DELETE FROM Paikka WHERE id = :id');
+        //$query->execute(array('id' => $this->id));
+        
+        
+        
+    }
+    
     public function validate_name() {
         $errors = array();
-        $newerrors = $this->validate_string_length($this->nimi, 1);
+        $newerrors = $this->validate_string_length($this->nimi, 1, 500);
         if (!empty($newerrors)) {
             $errors = array_merge($errors, $newerrors);
         }
-
         return $errors;
     }
     
     public function validate_p() {
         $errors = array();
-        // Tarkastetaan, että koordinaatti oikeassa muodossa.
-        // Tarkastetaan, että koordinaatti oikealla välillä.
+        
+        if (!is_double($this->p)) { 
+            $errors[] = "P-koordinaatin täytyy olla desimaaliluku.";
+        }
+        
+        if (is_double($this->p) && ($this->p < -90 | $this->p > 90)) { 
+            $errors[] = "P-koordinaatin täytyy olla välillä -90...90.";
+        }
+
         return $errors;
         
     }
     
     public function validate_i() {
         $errors = array();
-        // Tarkastetaan, että koordinaatti oikeassa muodossa.
-        // Tarkastetaan, että koordinaatti oikealla välillä.
+        
+        if (!is_double($this->i)) { 
+            $errors[] = "I-koordinaatin täytyy olla desimaaliluku.";
+        }
+        
+        if (is_double($this->i) && ($this->i < -180 | $this->i > 180)) { 
+            $errors[] = "P-koordinaatin täytyy olla välillä -180...180.";
+        }
+
         return $errors;
+        
     }
 
 }

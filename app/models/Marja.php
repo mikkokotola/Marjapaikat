@@ -69,7 +69,7 @@ class Marja extends BaseModel {
     
     public function validate_name() {
         $errors = array();
-        $newerrors = $this->validate_string_length($this->nimi, 2);
+        $newerrors = $this->validate_string_length($this->nimi, 2, 500);
         if (!empty($newerrors)) {
             $errors = array_merge($errors, $newerrors);
         }

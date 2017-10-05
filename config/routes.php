@@ -47,10 +47,28 @@ $routes->post('/marjastaja/:id/paikat/tallenna', function($id) {
     PaikkaController::tallennaPaikkaLomake($id);
 });
 
-$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
-    // TO DO: Testattava, että marjastaja on oikea (että paikka liittyy tähän marjastajaan).
+// Paikan poistaminen.
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/delete', function($marjastaja_id, $paikka_id) {
+    
+    PaikkaController::delete($marjastaja_id, $paikka_id);
+});
 
+// Paikan editointinäkymä
+$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/edit', function($marjastaja_id, $paikka_id) {
+    PaikkaController::edit($marjastaja_id, $paikka_id);
+});
+
+
+$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
     PaikkaController::show($marjastaja_id, $paikka_id);
+});
+
+
+
+// Paikan tietojen muuttaminen.
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/saveChanged', function($marjastaja_id, $paikka_id) {
+    
+    PaikkaController::saveChanged($marjastaja_id, $paikka_id);
 });
 
 

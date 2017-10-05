@@ -88,7 +88,7 @@ class MarjaController extends BaseController {
         // Kutsutaan Marja-luokan metodia delete, joka poistaa marjan sen id:llä
         $marja->delete();
 
-        // Ohjataan käyttäjä pelien listaussivulle ilmoituksen kera
+        // Ohjataan käyttäjä marjojen listaussivulle ilmoituksen kera
         Redirect::to('/', array('message' => 'Marja on poistettu!'));
     }
 

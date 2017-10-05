@@ -1,0 +1,21 @@
+   
+{% extends "/paikka/paikka.html" %}
+{% block muokkaaPaikkaa %}
+<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikka.id}}/saveChanged" style="display: inline-block;">
+    <div class="form-group">
+        <label>Uusi nimi</label>
+        <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
+        <label>P-koordinaatti</label>
+        <input name="p" class="form-control" value="{{attributes.p}}" type="number" min="-90" max="90" step="any">
+        <label>I-koordinaatti</label>
+        <input name="i" class="form-control" value="{{attributes.i}}" type="number" min="-90" max="90" step="any">
+        
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Tallenna</button>
+    </div>
+</form>
+
+
+{% endblock %}
