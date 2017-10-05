@@ -70,6 +70,19 @@ class Paikka extends BaseModel{
         return $paikat;
     }
     
+    public function save(){
+        $query = DB::connection()->prepare('INSERT INTO Paikka (marjastaja_id, p, i, nimi) VALUES (:marjastaja_id, :p, :i, :nimi) RETURNING id');
+        $query->execute(array(
+            'marjastaja_id' => $this->marjastaja_id,
+            'p' => $this->p,
+            'i' => $this->i,
+            'nimi' => $this->nimi
+        ));
+        $row = $query->fetch();
+        $this->id = $row['id'];
+        
+    }
+    
     public function validate_name() {
         $errors = array();
         $newerrors = $this->validate_string_length($this->nimi, 1);
@@ -89,7 +102,10 @@ class Paikka extends BaseModel{
     }
     
     public function validate_i() {
-        
+        $errors = array();
+        // Tarkastetaan, että koordinaatti oikeassa muodossa.
+        // Tarkastetaan, että koordinaatti oikealla välillä.
+        return $errors;
     }
 
 }
