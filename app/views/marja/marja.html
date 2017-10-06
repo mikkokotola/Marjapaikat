@@ -2,14 +2,15 @@
 {% extends "base.html" %}
 {% block content %}
 <h1 id="marjannimi">{{marjatiedot.marja.nimi}}</h1>
+{% block muokkaaMarjaa %}
+{% endblock %}
+
 {% if user_logged_in %}
 <!--    <a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>-->
     {{forms.edit_button("#{base_path}/marja/#{marjatiedot.marja.id}/rename", "Muokkaa nimeä")}}
     {{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/delete")}}
 {% endif %}
 
-{% block muokkaaMarjaa %}
-{% endblock %}
 
 <ul>
     <li><strong>Poimittu määrä (kg) kuluva vuosi: </strong>{{marjatiedot.marjanMaaraKuluvaVuosi}} kg</li>

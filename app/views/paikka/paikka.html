@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>{{paikka.nimi}}</h1>
-<button class="btn btn-danger">Näkymä on käyttäjäkohtainen ja edellyttää kirjautumista</button>
+<button class="btn btn-danger">Paikan muokkaus toteutettu. Paikan poistosta toteutettu dummy, ei vielä poista paikkaa kannasta. Käyntien ja marjasaaliiden toimintoja ei vielä toteutettu.</button>
 
 <div id="mapSmall"></div>
 
@@ -121,22 +121,24 @@
 <button class="btn btn-primary">Lisää uusi käynti</button>
 
 <script>
+
+
     function initMap() {
         var mapProp = {
-            center: new google.maps.LatLng(60.204558, 24.961813),
+            center: new google.maps.LatLng({{paikka.p}}, {{paikka.i}}),
             zoom: 12,
         };
-
         var map = new google.maps.Map(document.getElementById("mapSmall"), mapProp);
 
-        var markerinSijainti = {lat: 60.204558, lng: 24.961813};
+        var markerinSijainti = {lat: {{paikka.p}}, lng: {{paikka.i}}};
         var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikka.nimi}}'});
+            
+
         var infowindow = new google.maps.InfoWindow({
             content: "{{paikka.nimi}}"
         });
-
-
-        infowindow.open(map, marker);
+        
+        infowindow.open(map, marker);        
 
     }
 
