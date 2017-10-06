@@ -3,9 +3,6 @@
 
 <h1>{{marjastaja.etunimi}}n marjapaikat</h1>
 
-<button class="btn btn-danger">Näkymä on käyttäjäkohtainen ja edellyttää kirjautumista</button>
-<button class="btn btn-danger">Linkkejä tältä listaussivulta yksittäisten paikkojen sivulle ei vielä toteutettu: käytä suoria urleja muotoa ".../marjastaja/1/paikat/1"</button>
-
 <div id="map"></div>
 
 <!--<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallenna" style="display: inline-block;">
@@ -49,13 +46,13 @@
         };
         var map = new google.maps.Map(document.getElementById("map"), mapProp);
 
-        var markers = new Array();
+        //var markers = new Array();
 
         for (i = 1; i <= parseInt(document.getElementById('paikkalista_pituus').innerHTML); i++) {
             var markerinSijainti = {lat: parseFloat(document.getElementById(i + '_p').innerHTML), lng: parseFloat(document.getElementById(i + '_i').innerHTML)};
             var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML});
-            marker.setMap(map);
-            markers.push(marker);
+            //marker.setMap(map);
+            //markers.push(marker);
         }
 
         infowindow = new google.maps.InfoWindow({
@@ -63,21 +60,22 @@
             
         });
 
-        google.maps.event.addListener(marker, 'click', function () {
-            infowindow.open(map, marker);
-            
-        });
+//        google.maps.event.addListener(marker, 'click', function () {
+//            infowindow.open(map, this);
+//            
+//        });
 
 
-        google.maps.event.addListener(map, 'click', function () {
+        google.maps.event.addListener(map, 'click', function (event) {
             lisattavaMarker = new google.maps.Marker({
                 position: event.latLng,
                 map: map
             });
-            lisattavaMarker.setMap(map);
+            //lisattavaMarker.setMap(map);
             infowindow.open(map, lisattavaMarker);
         
         });
+        
 
     }
 

@@ -48,8 +48,8 @@ class PaikkaController extends BaseController {
             $params = $_GET;
             $attributes = array(
                 'marjastaja_id' => $marjastaja_id,
-                'p' => $params['lat'],
-                'i' => $params['lng'],
+                'p' => doubleval($params['lat']),
+                'i' => doubleval($params['lng']),
                 'nimi' => $params['nimi']
             );
 
@@ -57,7 +57,8 @@ class PaikkaController extends BaseController {
             $errors = $paikka->errors();
 
             //Kint::dump($paikka);
-
+            //Kint::dump($errors);
+            
             if (count($errors) == 0) {
                 // Lisättävä paikka on validi.
                 $paikka->save();
