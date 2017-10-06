@@ -1,11 +1,10 @@
--- Lisää CREATE TABLE lauseet tähän tiedostoon
 
 CREATE TABLE Marjastaja(
     id SERIAL PRIMARY KEY, 
     kayttajatunnus varchar(120) UNIQUE NOT NULL,
     salasana varchar(120) NOT NULL,
-    etunimi varchar(120),
-    sukunimi varchar(120)
+    etunimi varchar(120) NOT NULL,
+    sukunimi varchar(120) NOT NULL
 );
 
 CREATE TABLE Marja(
@@ -16,15 +15,15 @@ CREATE TABLE Marja(
 CREATE TABLE Paikka(
     id SERIAL PRIMARY KEY,
     marjastaja_id INTEGER REFERENCES Marjastaja(id),
-    p DECIMAL,
-    i DECIMAL,
+    p DECIMAL NOT NULL,
+    i DECIMAL NOT NULL,
     nimi varchar(500)
 );
 
 CREATE TABLE Kaynti(
     id SERIAL PRIMARY KEY,
     paikka_id INTEGER REFERENCES Paikka(id),
-    aika TIMESTAMP
+    aika TIMESTAMP NOT NULL
 );
 
 -- Liitostaulu Marjastajan ja Marjan välillä --
@@ -36,7 +35,7 @@ CREATE TABLE Suosikkimarja(
 CREATE TABLE Marjasaalis(
     marja_id INTEGER REFERENCES Marja(id),
     kaynti_id INTEGER REFERENCES Kaynti(id),
-    maara DECIMAL,
+    maara DECIMAL NOT NULL,
     kuvaus varchar(1000)
 );
 

@@ -11,6 +11,7 @@ class Marjastaja extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validate_kayttajatunnus', 'validate_salasana');
     }
 
     public static function authenticate($kayttajatunnus, $salasana) {
@@ -149,5 +150,32 @@ class Marjastaja extends BaseModel {
         }
         return $karkipoimijat;
     }
+
+    public function validate_kayttajatunnus() {
+        $errors = array();
+        $newerrors = $this->validate_string_length($this->kayttajatunnus, 1, 120);
+        if (!empty($newerrors)) {
+            $errors = array_merge($errors, $newerrors);
+        }
+
+        return $errors;
+    }
+
+    public function validate_salasana() {
+        $errors = array();
+        $newerrors = $this->validate_string_length($this->salasana, 1, 120);
+        if (!empty($newerrors)) {
+            $errors = array_merge($errors, $newerrors);
+        }
+
+        return $errors;
+    }
+
+//    $kayttajat = $this->all();
+//    foreach ($kayttajat as $kayttaja) {
+//        if ($kayttaja->kayttajatunnus === $this->kayttajatunnus) {
+//            $errors[] = "Käyttäjätunnus ei ole vapaana.";
+//        }
+//    }
 
 }
