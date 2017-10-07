@@ -9,21 +9,21 @@ class MarjaController extends BaseController {
 
     // Marjalistausnäkymä.
     public static function index() {
-        $marjadata = self::haeMarjadata();
+        $marjadata = self::getMarjadata();
 
         View::make('marja/marjat.html', array('marjadata' => $marjadata));
     }
 
     // Marjan lisäysnäkymä
-    public static function lisaaMarja() {
+    public static function addMarja() {
         // Kuka vain kirjautunut käyttäjä voi tallentaa uusia marjoja.
         self::check_logged_in();
-        $marjadata = self::haeMarjadata();
+        $marjadata = self::getMarjadata();
         View::make('marja/marjat_lisaamarja.html', array('marjadata' => $marjadata));
     }
 
     // Marjan tallentaminen (lomakkeen käsittely)
-    public static function tallennaMarja() {
+    public static function saveMarja() {
         // Kuka vain kirjautunut käyttäjä voi tallentaa uusia marjoja.
         self::check_logged_in();
         $params = $_POST;
@@ -40,7 +40,7 @@ class MarjaController extends BaseController {
             Redirect::to('/marjat', array('message' => 'Marja lisätty!'));
         } else {
             // Marjassa oli vikaa, ei lisätä.
-            $marjadata = self::haeMarjadata();
+            $marjadata = self::getMarjadata();
             View::make('marja/marjat_lisaamarja.html', array('errors' => $errors, 'marjadata' => $marjadata, 'attributes' => $attributes));
         }
     }
@@ -49,7 +49,7 @@ class MarjaController extends BaseController {
     public static function rename($marja_id) {
         // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
         self::check_logged_in();
-        $marjatiedot = self::haeMarjandata($marja_id);
+        $marjatiedot = self::getMarjandata($marja_id);
         View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot));
     }
 
@@ -70,7 +70,7 @@ class MarjaController extends BaseController {
         $errors = $marja->errors();
 
         if (count($errors) > 0) {
-            $marjatiedot = self::haeMarjandata($marja_id);
+            $marjatiedot = self::getMarjandata($marja_id);
             View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'errors' => $errors, 'attributes' => $attributes));
         } else {
             // Kutsutaan Marjan saveChangedName-metodia, joka päivittää nimen tietokannassa
@@ -93,13 +93,13 @@ class MarjaController extends BaseController {
     }
 
     public static function show($marja_id) {
-        $marjatiedot = self::haeMarjandata($marja_id);
+        $marjatiedot = self::getMarjandata($marja_id);
 
         View::make('marja/marja.html', array('marjatiedot' => $marjatiedot));
     }
 
     // Apumetodi, joka hakee marjatilasto-näkymän tarvitseman marjadatan (tilastoineen).
-    private static function haeMarjadata() {
+    private static function getMarjadata() {
         $marjadata = array();
         $marjat = Marja::all();
 
@@ -109,8 +109,8 @@ class MarjaController extends BaseController {
             $marjatiedot[] = $marja->id;
             $marjatiedot[] = $marja->nimi;
             $marjatiedot[] = Marjasaalis::maaraByMarjaAndVuosi($marja->id, date('Y'));
-            $marjatiedot[] = Marjasaalis::maaraKokohistoriaByMarja($marja->id);
-            $marjatiedot[] = count(Marjastaja::findByMarjaAndVuosi($marja->id, date('Y')));
+            $marjatiedot[] = Marjasaalis::amountHistoryByMarja($marja->id);
+            $marjatiedot[] = count(Marjastaja::findByMarjaAndYear($marja->id, date('Y')));
             $marjatiedot[] = count(Marjastaja::findByMarja($marja->id));
             $marjadata[$n] = $marjatiedot;
             $n++;
@@ -119,16 +119,16 @@ class MarjaController extends BaseController {
     }
 
     // Apumetodi, joka hakee yksittäisen marjan näkymän tarvitseman marjadatan.
-    private static function haeMarjandata($marja_id) {
+    private static function getMarjandata($marja_id) {
         $marja = Marja::find($marja_id);
         $suosikkikayttajat = Marjastaja::findBySuosikkimarja($marja_id);
-        $poimineetKayttajatKuluvaVuosi = Marjastaja::findByMarjaAndVuosi($marja_id, date('Y'));
+        $poimineetKayttajatKuluvaVuosi = Marjastaja::findByMarjaAndYear($marja_id, date('Y'));
         $poimineetKayttajatLkmKuluvaVuosi = count($poimineetKayttajatKuluvaVuosi);
         $poimineetKayttajatKokoHistoria = Marjastaja::findByMarja($marja_id);
         $poimineetKayttajatLkmKokoHistoria = count($poimineetKayttajatKokoHistoria);
-        $marjanMaaraKokoHistoria = Marjasaalis::maaraKokohistoriaByMarja($marja_id);
+        $marjanMaaraKokoHistoria = Marjasaalis::amountHistoryByMarja($marja_id);
         $marjanMaaraKuluvaVuosi = Marjasaalis::maaraByMarjaAndVuosi($marja_id, date('Y'));
-        $marjanTopPoimijat = Marjastaja::karkipoimijatByMarjaAndVuosi($marja_id, date('Y'));
+        $marjanTopPoimijat = Marjastaja::topPickersByMarjaAndYear($marja_id, date('Y'));
 
         $marjatiedot = array(
             'marja' => $marja,

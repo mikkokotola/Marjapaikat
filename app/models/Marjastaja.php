@@ -111,7 +111,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function findByMarjaAndVuosi($marja_id, $vuosi) {
+    public static function findByMarjaAndYear($marja_id, $vuosi) {
         // Kysely, jossa haetaan tiettyä marjaa tiettynä vuonna poimineet uniikit käyttäjät.
         $query = DB::connection()->prepare('SELECT DISTINCT mj.id, mj.kayttajatunnus, mj.salasana, mj.etunimi, mj.sukunimi FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '
                 . 'WHERE mj.id = p.marjastaja_id AND p.id = k.paikka_id AND k.id = ms.kaynti_id AND ms.marja_id = :marja_id AND extract(year from k.aika)=:vuosi');
@@ -131,7 +131,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function karkipoimijatByMarjaAndVuosi($marja_id, $vuosi) {
+    public static function topPickersByMarjaAndYear($marja_id, $vuosi) {
         // Kysely, jossa haetaan tiettyä marjaa tiettynä vuonna poimineet uniikit käyttäjät saaliin määrän mukaisessa järjestyksessä. Palauttaa taulukon, jossa etunimi, sukunimi, poimittu määrä 
         // annettuna vuonna ja poimittu määrä koko historian aikana.
         $query = DB::connection()->prepare('SELECT mj.etunimi AS etun, mj.sukunimi AS sukun, SUM(ms.maara) AS saalis FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '

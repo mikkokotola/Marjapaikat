@@ -34,17 +34,17 @@ $routes->get('/marjastaja/:id/paikat', function($id) {
 });
 
 $routes->get('/marjastaja/:id/paikat/new', function($id) {
-    PaikkaController::lisaaPaikka($id);
+    PaikkaController::addPaikka($id);
 });
 
 // Uuden paikan tallentaminen googlemaps-kartalta tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
 $routes->get('/marjastaja/:id/paikat/tallenna', function($id) {
-    PaikkaController::tallennaPaikka($id);
+    PaikkaController::savePaikka($id);
 });
 
 // Uuden paikan tallentaminen lomakkeella.
 $routes->post('/marjastaja/:id/paikat/tallenna', function($id) {
-    PaikkaController::tallennaPaikkaLomake($id);
+    PaikkaController::savePaikkaForm($id);
 });
 
 // Paikan poistaminen.
@@ -78,11 +78,11 @@ $routes->get('/marja', function() {
 });
 
 $routes->get('/marjat/new', function() {
-    MarjaController::lisaaMarja();
+    MarjaController::addMarja();
 });
 
 $routes->post('/marjat/new', function() {
-    MarjaController::tallennaMarja();
+    MarjaController::saveMarja();
 });
 
 

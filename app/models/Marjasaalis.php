@@ -67,7 +67,7 @@ class Marjasaalis extends BaseModel {
         
     }
     
-    public static function findByMarjaAndKayntivuosi($marja_id, $vuosi) {
+    public static function findByMarjaAndKayntiYear($marja_id, $vuosi) {
         $query = DB::connection()->prepare('SELECT ms.marja_id, ms.kaynti_id, ms.maara, ms.kuvaus FROM Marjasaalis ms, Kaynti k WHERE ms.marja_id=:marja_id AND ms.kaynti_id=k.id AND extract(year from k.aika)=:vuosi;');
         $query->execute(array('marja_id' => $marja_id, 'vuosi' => $vuosi));
         $rows = $query->fetchAll();
@@ -84,7 +84,7 @@ class Marjasaalis extends BaseModel {
         return $marjasaaliit;
     }
     
-    public static function findByMarjaAndKayntivuosiAndKayttaja($marja_id, $vuosi, $marjastaja_id) {
+    public static function findByMarjaAndKayntiYearAndMarjastaja($marja_id, $vuosi, $marjastaja_id) {
         $query = DB::connection()->prepare('SELECT ms.marja_id, ms.kaynti_id, ms.maara, ms.kuvaus '
                 . 'FROM Marjasaalis ms, Kaynti k, Paikka p '
                 . 'WHERE ms.marja_id=:marja_id AND ms.kaynti_id=k.id '
@@ -105,7 +105,7 @@ class Marjasaalis extends BaseModel {
         return $marjasaaliit;
     }
     
-    public static function findByMarjaAndKayttaja($marja_id, $marjastaja_id) {
+    public static function findByMarjaAndMarjastaja($marja_id, $marjastaja_id) {
         $query = DB::connection()->prepare('SELECT ms.marja_id, ms.kaynti_id, ms.maara, ms.kuvaus '
                 . 'FROM Marjasaalis ms, Kaynti k, Paikka p '
                 . 'WHERE ms.marja_id=:marja_id AND ms.kaynti_id=k.id '
@@ -126,7 +126,7 @@ class Marjasaalis extends BaseModel {
         return $marjasaaliit;
     }
     
-    public static function maaraKokohistoriaByMarja($marja_id) {
+    public static function amountHistoryByMarja($marja_id) {
         $marjasaaliit = self::findByMarja($marja_id);
         $poimittuSumma = 0.0;
         foreach ($marjasaaliit as $saalis) {
@@ -136,7 +136,7 @@ class Marjasaalis extends BaseModel {
     }
     
     public static function maaraByMarjaAndVuosi($marja_id, $vuosi) {
-        $marjasaaliit = self::findByMarjaAndKayntivuosi($marja_id, $vuosi) ;
+        $marjasaaliit = self::findByMarjaAndKayntiYear($marja_id, $vuosi) ;
         $poimittuSumma = 0.0;
         foreach ($marjasaaliit as $saalis) {
             $poimittuSumma += $saalis->maara;
@@ -144,8 +144,8 @@ class Marjasaalis extends BaseModel {
         return $poimittuSumma;
     }
     
-    public static function maaraByMarjaAndVuosiAndKayttaja($marja_id, $vuosi, $marjastaja_id) {
-        $marjasaaliit = self::findByMarjaAndKayntivuosiAndKayttaja($marja_id, $vuosi, $marjastaja_id);
+    public static function amountByMarjaAndYearAndMarjastaja($marja_id, $vuosi, $marjastaja_id) {
+        $marjasaaliit = self::findByMarjaAndKayntiYearAndMarjastaja($marja_id, $vuosi, $marjastaja_id);
         $poimittuSumma = 0.0;
         foreach ($marjasaaliit as $saalis) {
             $poimittuSumma += $saalis->maara;
@@ -153,8 +153,8 @@ class Marjasaalis extends BaseModel {
         return $poimittuSumma;
     }
     
-    public static function maaraByMarjaAndKayttaja($marja_id, $marjastaja_id) {
-        $marjasaaliit = self::findByMarjaAndKayttaja($marja_id, $marjastaja_id);
+    public static function amountByMarjaAndMarjastaja($marja_id, $marjastaja_id) {
+        $marjasaaliit = self::findByMarjaAndMarjastaja($marja_id, $marjastaja_id);
         $poimittuSumma = 0.0;
         foreach ($marjasaaliit as $saalis) {
             $poimittuSumma += $saalis->maara;

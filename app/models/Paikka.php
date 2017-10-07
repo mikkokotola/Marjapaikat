@@ -97,15 +97,8 @@ class Paikka extends BaseModel{
     
     
     public function delete(){
-        // TOTEUTTAMATTA
-        
-        // Poistettava Marjasaaliit, Käynnit, Paikat ja Marjastajien viitteet
-        
-               
-        //$query = DB::connection()->prepare('DELETE FROM Paikka WHERE id = :id');
-        //$query->execute(array('id' => $this->id));
-        
-        
+        $query = DB::connection()->prepare('DELETE FROM Paikka WHERE id = :id');
+        $query->execute(array('id' => $this->id));
         
     }
     

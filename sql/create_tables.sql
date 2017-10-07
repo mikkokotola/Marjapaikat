@@ -14,7 +14,7 @@ CREATE TABLE Marja(
 
 CREATE TABLE Paikka(
     id SERIAL PRIMARY KEY,
-    marjastaja_id INTEGER REFERENCES Marjastaja(id),
+    marjastaja_id INTEGER REFERENCES Marjastaja(id) ON DELETE CASCADE,
     p DECIMAL NOT NULL,
     i DECIMAL NOT NULL,
     nimi varchar(500)
@@ -22,19 +22,19 @@ CREATE TABLE Paikka(
 
 CREATE TABLE Kaynti(
     id SERIAL PRIMARY KEY,
-    paikka_id INTEGER REFERENCES Paikka(id),
+    paikka_id INTEGER REFERENCES Paikka(id) ON DELETE CASCADE,
     aika TIMESTAMP NOT NULL
 );
 
 -- Liitostaulu Marjastajan ja Marjan välillä --
 CREATE TABLE Suosikkimarja(
-    marjastaja_id INTEGER REFERENCES Marjastaja(id),
-    marja_id INTEGER REFERENCES Marja(id)
+    marjastaja_id INTEGER REFERENCES Marjastaja(id) ON DELETE CASCADE,
+    marja_id INTEGER REFERENCES Marja(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Marjasaalis(
-    marja_id INTEGER REFERENCES Marja(id),
-    kaynti_id INTEGER REFERENCES Kaynti(id),
+    marja_id INTEGER REFERENCES Marja(id) ON DELETE CASCADE,
+    kaynti_id INTEGER REFERENCES Kaynti(id) ON DELETE CASCADE,
     maara DECIMAL NOT NULL,
     kuvaus varchar(1000)
 );

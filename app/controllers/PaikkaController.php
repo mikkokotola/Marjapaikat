@@ -31,7 +31,7 @@ class PaikkaController extends BaseController {
     }
 
     // Paikanlisäämisnäkymään ohjaus.
-    public static function lisaaPaikka($marjastaja_id) {
+    public static function addPaikka($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::find($marjastaja_id);
             $paikat = Paikka::findByKayttaja($marjastaja_id);
@@ -43,7 +43,7 @@ class PaikkaController extends BaseController {
     }
 
     // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
-    public static function tallennaPaikka($marjastaja_id) {
+    public static function savePaikka($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_GET;
             $attributes = array(
@@ -76,7 +76,7 @@ class PaikkaController extends BaseController {
     }
 
     // Uuden paikan tallentaminen tehty postilla.
-    public static function tallennaPaikkaLomake($marjastaja_id) {
+    public static function savePaikkaForm($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
             $attributes = array(
