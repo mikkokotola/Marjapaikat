@@ -56,9 +56,6 @@ class PaikkaController extends BaseController {
             $paikka = new Paikka($attributes);
             $errors = $paikka->errors();
 
-            //Kint::dump($paikka);
-            //Kint::dump($errors);
-            
             if (count($errors) == 0) {
                 // Lisättävä paikka on validi.
                 $paikka->save();
@@ -80,15 +77,29 @@ class PaikkaController extends BaseController {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
             $attributes = array(
-                'nimi' => $params['nimi'],
-                'p' => $params['lat'],
-                'i' => $params['lng'],
+                'marjastaja_id' => $marjastaja_id,
+                'p' => doubleval($params['lat']),
+                'i' => doubleval($params['lng']),
+                'nimi' => $params['nimi']
             );
 
-            //Kint::dump($attributes);
-            $marjastaja = Marjastaja::find($marjastaja_id);
-            $paikat = Paikka::findByKayttaja($marjastaja_id);
-            View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja));
+            $paikka = new Paikka($attributes);
+            $errors = $paikka->errors();
+
+//            Kint::dump($paikka);
+//            Kint::dump($errors);
+            
+            if (count($errors) == 0) {
+                // Lisättävä paikka on validi.
+                $paikka->save();
+                //Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
+            } else {
+                // Paikassa oli vikaa, ei lisätä.
+                $marjastaja = Marjastaja::find($marjastaja_id);
+                $paikat = Paikka::findByKayttaja($marjastaja_id);
+
+                View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+            }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
@@ -96,6 +107,9 @@ class PaikkaController extends BaseController {
 
     // Yksittäisen paikan näyttäminen.
     public static function show($marjastaja_id, $paikka_id) {
+//        Kint::dump($marjastaja_id);
+//        Kint::dump($paikka_id);
+        
         $paikka = Paikka::find($paikka_id);
         $marjastaja = Marjastaja::find($marjastaja_id);
         if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {

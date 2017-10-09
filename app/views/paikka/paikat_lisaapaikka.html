@@ -7,24 +7,10 @@
 
 <div id="map"></div>
 
-<!--<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallenna" style="display: inline-block;">
-    <div class="form-group">
-        <label>Uusi paikka</label>
-        <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
-        <input name="p" class="form-control" value="{{attributes.p}}" type="text">
-        <input name="i" class="form-control" value="{{attributes.i}}" type="text">
-    </div>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Tallenna</button>
-    </div>
-</form>-->
-
-
 <div id="form" >
     <table>
-        <tr><td>Name:</td> <td><input type='text' id='name'/> </td> </tr>
-        <tr><td></td><td><input type='button' value='Tallenna' onclick='saveData()'/></td></tr>
+        <tr><td>Nimi:</td> <td><input type='text' id='name'/> </td> </tr>
+        <tr><td></td><td><input type='button' value='Tallenna' onclick='saveDataPost()'/></td></tr>
     </table>
 </div>
 
@@ -47,27 +33,21 @@
             zoom: 12,
         };
         var map = new google.maps.Map(document.getElementById("map"), mapProp);
-
         //var markers = new Array();
-
         for (i = 1; i <= parseInt(document.getElementById('paikkalista_pituus').innerHTML); i++) {
             var markerinSijainti = {lat: parseFloat(document.getElementById(i + '_p').innerHTML), lng: parseFloat(document.getElementById(i + '_i').innerHTML)};
             var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: document.getElementById(i + '_nimi').innerHTML});
             //marker.setMap(map);
             //markers.push(marker);
         }
-
         infowindow = new google.maps.InfoWindow({
             content: document.getElementById('form')
             
         });
-
 //        google.maps.event.addListener(marker, 'click', function () {
 //            infowindow.open(map, this);
 //            
 //        });
-
-
         google.maps.event.addListener(map, 'click', function (event) {
             lisattavaMarker = new google.maps.Marker({
                 position: event.latLng,
@@ -78,43 +58,41 @@
         
         });
         
-
     }
+</script>
 
-    function saveData() {
+<script>
+    function saveDataPost() {
+
         var name = escape(document.getElementById('name').value);
         var latlng = lisattavaMarker.getPosition();
-        var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallenna?nimi=' + name + '&lat=' + latlng.lat() + '&lng=' + latlng.lng();
+        var params = "nimi=" + name + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
+        var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/save';
 
-        downloadUrl(url, function (data, responseCode) {
+        var http = new XMLHttpRequest();
+        
+        http.open("POST", url, true);
 
-            if (responseCode == 200 && data.length <= 1) {
-                infowindow.close();
-            }
-            window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
-        });
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-length", params.length);
+        http.setRequestHeader("Connection", "close");
+
+        http.onreadystatechange = function() {
+                if(http.readyState == 4 && http.status == 200) {
+                        alert(http.responseText);
+                }
+                window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
+        }
+        http.send(params);
+
+        
     }
 
-    function downloadUrl(url, callback) {
-        var request = window.ActiveXObject ?
-                new ActiveXObject('Microsoft.XMLHTTP') :
-                new XMLHttpRequest;
 
-        request.onreadystatechange = function () {
-            if (request.readyState == 4) {
-                request.onreadystatechange = doNothing;
-                callback(request.responseText, request.status);
-            }
-        };
 
-        request.open('GET', url, true);
-        request.send(null);
-    }
-
-    function doNothing() {
-    }
 
 </script>
+
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL0wY9vQo3WSVsc0cnedWrjtjO9HLlo0g&callback=initMap"
 async defer></script>

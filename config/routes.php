@@ -37,15 +37,20 @@ $routes->get('/marjastaja/:id/paikat/new', function($id) {
     PaikkaController::addPaikka($id);
 });
 
-// Uuden paikan tallentaminen googlemaps-kartalta tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
+// Uuden paikan tallentaminen googlemaps-kartalta tehty get-komennolla ja parametreillä.
 $routes->get('/marjastaja/:id/paikat/tallenna', function($id) {
     PaikkaController::savePaikka($id);
 });
 
 // Uuden paikan tallentaminen lomakkeella.
-$routes->post('/marjastaja/:id/paikat/tallenna', function($id) {
+$routes->post('/marjastaja/:id/paikat/save', function($id) {
     PaikkaController::savePaikkaForm($id);
 });
+
+//$routes->get('/marjastaja/:id/paikat/save', function($id) {
+//    PaikkaController::savePaikkaForm($id);
+//});
+
 
 // Paikan poistaminen.
 $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/delete', function($marjastaja_id, $paikka_id) {
@@ -58,12 +63,11 @@ $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/edit', function($marj
     PaikkaController::edit($marjastaja_id, $paikka_id);
 });
 
-
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
+//    Kint::dump($marjastaja_id);
+//    Kint::dump($paikka_id);
     PaikkaController::show($marjastaja_id, $paikka_id);
 });
-
-
 
 // Paikan tietojen muuttaminen.
 $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/saveChanged', function($marjastaja_id, $paikka_id) {
