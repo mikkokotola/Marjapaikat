@@ -2,16 +2,16 @@
 
 class MarjastajaController extends BaseController {
 
-    public static function login() {
+    public static function kirjauduSisaan() {
         View::make('marjastaja/kirjaudu.html');
     }
 
-    public static function logout() {
+    public static function kirjauduUlos() {
         $_SESSION['user'] = null;
         Redirect::to('/', array('message' => 'Olet kirjautunut ulos!'));
     }
 
-    public static function handle_login() {
+    public static function kasitteleKirjautuminen() {
         $params = $_POST;
         $attributes = array(
             'kayttajatunnus' => $params['kayttajatunnus'],
@@ -24,7 +24,7 @@ class MarjastajaController extends BaseController {
             View::make('marjastaja/kirjaudu.html', array('errors' => $errors, 'kayttajatunnus' => $params['kayttajatunnus']));
         }
 
-        $marjastaja = Marjastaja::authenticate($params['kayttajatunnus'], $params['salasana']);
+        $marjastaja = Marjastaja::tunnistaKayttaja($params['kayttajatunnus'], $params['salasana']);
         
         if (!$marjastaja) {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Väärä käyttäjätunnus tai salasana', 'kayttajatunnus' => $params['kayttajatunnus']));

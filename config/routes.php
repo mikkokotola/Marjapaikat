@@ -2,17 +2,17 @@
 
 // Kirjautumislomakkeen esittäminen
 $routes->get('/login', function() {
-    MarjastajaController::login();
+    MarjastajaController::kirjauduSisaan();
 });
 
 // Kirjautumisen käsittely
 $routes->post('/login', function() {
-    MarjastajaController::handle_login();
+    MarjastajaController::kasitteleKirjautuminen();
 });
 
 // Uloskirjautumisen käsittely
 $routes->post('/logout', function(){
-    MarjastajaController::logout();
+    MarjastajaController::kirjauduUlos();
 });
 
 
@@ -34,17 +34,17 @@ $routes->get('/marjastaja/:id/paikat', function($id) {
 });
 
 $routes->get('/marjastaja/:id/paikat/new', function($id) {
-    PaikkaController::addPaikka($id);
+    PaikkaController::lisaaPaikka($id);
 });
 
 // Uuden paikan tallentaminen googlemaps-kartalta tehty get-komennolla ja parametreillä.
 $routes->get('/marjastaja/:id/paikat/tallenna', function($id) {
-    PaikkaController::savePaikka($id);
+    PaikkaController::tallennaPaikka($id);
 });
 
 // Uuden paikan tallentaminen lomakkeella.
 $routes->post('/marjastaja/:id/paikat/save', function($id) {
-    PaikkaController::savePaikkaForm($id);
+    PaikkaController::tallennusKasittele($id);
 });
 
 //$routes->get('/marjastaja/:id/paikat/save', function($id) {
@@ -55,24 +55,24 @@ $routes->post('/marjastaja/:id/paikat/save', function($id) {
 // Paikan poistaminen.
 $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/delete', function($marjastaja_id, $paikka_id) {
     
-    PaikkaController::delete($marjastaja_id, $paikka_id);
+    PaikkaController::poista($marjastaja_id, $paikka_id);
 });
 
 // Paikan editointinäkymä
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/edit', function($marjastaja_id, $paikka_id) {
-    PaikkaController::edit($marjastaja_id, $paikka_id);
+    PaikkaController::muokkaa($marjastaja_id, $paikka_id);
 });
 
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
 //    Kint::dump($marjastaja_id);
 //    Kint::dump($paikka_id);
-    PaikkaController::show($marjastaja_id, $paikka_id);
+    PaikkaController::nayta($marjastaja_id, $paikka_id);
 });
 
 // Paikan tietojen muuttaminen.
 $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/saveChanged', function($marjastaja_id, $paikka_id) {
     
-    PaikkaController::saveChanged($marjastaja_id, $paikka_id);
+    PaikkaController::muokkausKasittele($marjastaja_id, $paikka_id);
 });
 
 
@@ -82,11 +82,11 @@ $routes->get('/marja', function() {
 });
 
 $routes->get('/marjat/new', function() {
-    MarjaController::addMarja();
+    MarjaController::lisaaMarja();
 });
 
 $routes->post('/marjat/new', function() {
-    MarjaController::saveMarja();
+    MarjaController::tallennaMarja();
 });
 
 
@@ -97,20 +97,20 @@ $routes->get('/hiekkalaatikko', function() {
 
 
 $routes->get('/marja/:id', function($id) {
-    MarjaController::show($id);
+    MarjaController::nayta($id);
 });
 
 $routes->get('/marja/:id/rename', function($id) {
-    MarjaController::rename($id);
+    MarjaController::muokkausNakyma($id);
 });
 
 $routes->post('/marja/:id/delete', function($id) {
-    MarjaController::delete($id);
+    MarjaController::poista($id);
 });
 
 
 $routes->post('/marja/rename', function() {
-    MarjaController::renameMarja();
+    MarjaController::muutaNimeaKasittele();
 });
 
 

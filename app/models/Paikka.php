@@ -12,10 +12,10 @@ class Paikka extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_name', 'validate_p', 'validate_i', 'validate_p_i_identicalPlaces');
+        $this->validators = array('validoi_nimi', 'validoi_p', 'validoi_i', 'validoi_p_i_identtisetPaikat');
     }
 
-    public static function all() {
+    public static function haeKaikki() {
         $query = DB::connection()->prepare('SELECT * FROM Paikka');
         $query->execute();
         $rows = $query->fetchAll();
@@ -33,7 +33,7 @@ class Paikka extends BaseModel {
         return $paikat;
     }
 
-    public static function find($id) {
+    public static function hae($id) {
         $query = DB::connection()->prepare('SELECT * FROM Paikka WHERE id=:id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
@@ -52,7 +52,7 @@ class Paikka extends BaseModel {
         return null;
     }
 
-    public static function findByKayttaja($id) {
+    public static function haeKayttajanMukaan($id) {
         $query = DB::connection()->prepare('SELECT * FROM Paikka WHERE marjastaja_id=:id');
         $query->execute(array('id' => $id));
         $rows = $query->fetchAll();
@@ -70,7 +70,7 @@ class Paikka extends BaseModel {
         return $paikat;
     }
 
-    public function save() {
+    public function tallenna() {
         $query = DB::connection()->prepare('INSERT INTO Paikka (marjastaja_id, p, i, nimi) VALUES (:marjastaja_id, :p, :i, :nimi) RETURNING id');
         $query->execute(array(
             'marjastaja_id' => $this->marjastaja_id,
@@ -82,7 +82,7 @@ class Paikka extends BaseModel {
         $this->id = $row['id'];
     }
 
-    public function saveChanged() {
+    public function tallennaMuuttunut() {
         $query = DB::connection()->prepare('UPDATE Paikka SET p = :p, i = :i, nimi = :nimi WHERE id = :id;');
         $query->execute(array(
             'id' => $this->id,
@@ -92,12 +92,12 @@ class Paikka extends BaseModel {
         ));
     }
 
-    public function delete() {
+    public function poista() {
         $query = DB::connection()->prepare('DELETE FROM Paikka WHERE id = :id');
         $query->execute(array('id' => $this->id));
     }
 
-    public function validate_name() {
+    public function validoi_nimi() {
         $errors = array();
         $newerrors = $this->validate_string_length($this->nimi, 1, 500);
         if (!empty($newerrors)) {
@@ -106,7 +106,7 @@ class Paikka extends BaseModel {
         return $errors;
     }
 
-    public function validate_p() {
+    public function validoi_p() {
         $errors = array();
 
         if (!is_double($this->p)) {
@@ -120,7 +120,7 @@ class Paikka extends BaseModel {
         return $errors;
     }
 
-    public function validate_i() {
+    public function validoi_i() {
         $errors = array();
 
         if (!is_double($this->i)) {
@@ -134,11 +134,11 @@ class Paikka extends BaseModel {
         return $errors;
     }
 
-    public function validate_p_i_identicalPlaces() {
+    public function validoi_p_i_identtisetPaikat() {
         $errors = array();
 
         if (!is_double($this->i) && is_double($this->i)) {
-            $paikat = $this->all();
+            $paikat = $this->haeKaikki();
             foreach ($paikat as $paikka) {
                 if ($paikka->p == $this->p && $paikka->i == $this->i) {
                     $errors[] = "Paikka näillä koordinaateilla on jo olemassa.";
@@ -147,10 +147,6 @@ class Paikka extends BaseModel {
 
             $errors[] = "I-koordinaatin täytyy olla desimaaliluku.";
         }
-
-
-
-
         return $errors;
     }
 

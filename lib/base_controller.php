@@ -6,7 +6,7 @@ class BaseController {
         // Katsotaan onko user-avain sessiossa
         if (isset($_SESSION['user'])) {
             $marjastaja_id = $_SESSION['user'];
-            $user = Marjastaja::find($marjastaja_id);
+            $user = Marjastaja::hae($marjastaja_id);
 
             return $user;
         }

@@ -15,7 +15,7 @@ class Kaynti {
         $this->validators = array('validoi_aika');
     }
 
-    public static function all() {
+    public static function haeKaikki() {
         $query = DB::connection()->prepare('SELECT * FROM Kaynti');
         $query->execute();
         $rows = $query->fetchAll();
@@ -31,7 +31,7 @@ class Kaynti {
         return $kaynnit;
     }
 
-    public static function find($id) {
+    public static function hae($id) {
         $query = DB::connection()->prepare('SELECT * FROM Kaynti WHERE id=:id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();

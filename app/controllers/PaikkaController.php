@@ -16,8 +16,8 @@ class PaikkaController extends BaseController {
     // Tietyn marjastajan paikkojen listaaminen.
     public static function paikat($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
-            $marjastaja = Marjastaja::find($marjastaja_id);
-            $paikat = Paikka::findByKayttaja($marjastaja_id);
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
             View::make('paikka/paikat.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja));
         } else {
@@ -31,10 +31,10 @@ class PaikkaController extends BaseController {
     }
 
     // Paikanlisäämisnäkymään ohjaus.
-    public static function addPaikka($marjastaja_id) {
+    public static function lisaaPaikka($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
-            $marjastaja = Marjastaja::find($marjastaja_id);
-            $paikat = Paikka::findByKayttaja($marjastaja_id);
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
             View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja));
         } else {
@@ -42,38 +42,38 @@ class PaikkaController extends BaseController {
         }
     }
 
-    // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
-    public static function savePaikka($marjastaja_id) {
-        if (self::check_logged_in_user($marjastaja_id)) {
-            $params = $_GET;
-            $attributes = array(
-                'marjastaja_id' => $marjastaja_id,
-                'p' => doubleval($params['lat']),
-                'i' => doubleval($params['lng']),
-                'nimi' => $params['nimi']
-            );
-
-            $paikka = new Paikka($attributes);
-            $errors = $paikka->errors();
-
-            if (count($errors) == 0) {
-                // Lisättävä paikka on validi.
-                $paikka->save();
-                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
-            } else {
-                // Paikassa oli vikaa, ei lisätä.
-                $marjastaja = Marjastaja::find($marjastaja_id);
-                $paikat = Paikka::findByKayttaja($marjastaja_id);
-
-                View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
-            }
-        } else {
-            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-        }
-    }
+//    // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
+//    public static function tallennaPaikka($marjastaja_id) {
+//        if (self::check_logged_in_user($marjastaja_id)) {
+//            $params = $_GET;
+//            $attributes = array(
+//                'marjastaja_id' => $marjastaja_id,
+//                'p' => doubleval($params['lat']),
+//                'i' => doubleval($params['lng']),
+//                'nimi' => $params['nimi']
+//            );
+//
+//            $paikka = new Paikka($attributes);
+//            $errors = $paikka->errors();
+//
+//            if (count($errors) == 0) {
+//                // Lisättävä paikka on validi.
+//                $paikka->tallenna();
+//                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
+//            } else {
+//                // Paikassa oli vikaa, ei lisätä.
+//                $marjastaja = Marjastaja::hae($marjastaja_id);
+//                $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
+//
+//                View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+//            }
+//        } else {
+//            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+//        }
+//    }
 
     // Uuden paikan tallentaminen tehty postilla.
-    public static function savePaikkaForm($marjastaja_id) {
+    public static function tallennusKasittele($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
             $attributes = array(
@@ -91,12 +91,12 @@ class PaikkaController extends BaseController {
             
             if (count($errors) == 0) {
                 // Lisättävä paikka on validi.
-                $paikka->save();
+                $paikka->tallenna();
                 //Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
             } else {
                 // Paikassa oli vikaa, ei lisätä.
-                $marjastaja = Marjastaja::find($marjastaja_id);
-                $paikat = Paikka::findByKayttaja($marjastaja_id);
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
                 View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
             }
@@ -106,12 +106,12 @@ class PaikkaController extends BaseController {
     }
 
     // Yksittäisen paikan näyttäminen.
-    public static function show($marjastaja_id, $paikka_id) {
+    public static function nayta($marjastaja_id, $paikka_id) {
 //        Kint::dump($marjastaja_id);
 //        Kint::dump($paikka_id);
         
-        $paikka = Paikka::find($paikka_id);
-        $marjastaja = Marjastaja::find($marjastaja_id);
+        $paikka = Paikka::hae($paikka_id);
+        $marjastaja = Marjastaja::hae($marjastaja_id);
         if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             View::make('paikka/paikka.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja));
         } else {
@@ -120,11 +120,11 @@ class PaikkaController extends BaseController {
     }
 
     // Paikan poistaminen
-    public static function delete($marjastaja_id, $paikka_id) {
+    public static function poista($marjastaja_id, $paikka_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
-            $paikka = Paikka::find($paikka_id);
+            $paikka = Paikka::hae($paikka_id);
             // Kutsutaan Paikka-luokan metodia delete, joka poistaa marjan sen id:llä
-            $paikka->delete();
+            $paikka->poista();
 
             // Ohjataan käyttäjä paikkojen listaussivulle ilmoituksen kera
             Redirect::to('/marjastaja/'. $marjastaja_id .'/paikat', array('message' => 'Paikka on poistettu'));
@@ -134,10 +134,10 @@ class PaikkaController extends BaseController {
     }
     
     // Paikan muokkaamisnäkymä
-    public static function edit($marjastaja_id, $paikka_id) {
-        $paikka = Paikka::find($paikka_id);
+    public static function muokkaa($marjastaja_id, $paikka_id) {
+        $paikka = Paikka::hae($paikka_id);
         if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
-            $marjastaja = Marjastaja::find($marjastaja_id);
+            $marjastaja = Marjastaja::hae($marjastaja_id);
             $attributes = array(
                 'marjastaja_id' => $marjastaja_id,
                 'p' => $paikka->p,
@@ -152,7 +152,7 @@ class PaikkaController extends BaseController {
     }
     
     // Paikan muokkaamislomakkeen käsittely.
-    public static function saveChanged($marjastaja_id, $paikka_id) {
+    public static function muokkausKasittele($marjastaja_id, $paikka_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
             $attributes = array(
@@ -171,12 +171,12 @@ class PaikkaController extends BaseController {
 
             if (count($errors) == 0) {
                 // Muutettava paikka on validi.
-                $paikka->saveChanged();
+                $paikka->tallennaMuuttunut();
                 Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Paikan tiedot tallennettu'));
             } else {
                 // Paikassa oli vikaa, ei muuteta.
-                $marjastaja = Marjastaja::find($marjastaja_id);
-                $paikka = Paikka::find($paikka_id);
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikka = Paikka::hae($paikka_id);
 
                 View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
             }

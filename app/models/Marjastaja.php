@@ -11,10 +11,10 @@ class Marjastaja extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_kayttajatunnus', 'validate_salasana');
+        $this->validators = array('validoi_kayttajatunnus', 'validoi_salasana');
     }
 
-    public static function authenticate($kayttajatunnus, $salasana) {
+    public static function tunnistaKayttaja($kayttajatunnus, $salasana) {
 
         $query = DB::connection()->prepare('SELECT * FROM Marjastaja WHERE kayttajatunnus = :kayttajatunnus AND salasana = :salasana LIMIT 1');
         $query->execute(array('kayttajatunnus' => $kayttajatunnus, 'salasana' => $salasana));
@@ -35,7 +35,7 @@ class Marjastaja extends BaseModel {
         }
     }
 
-    public static function all() {
+    public static function haeKaikki() {
         $query = DB::connection()->prepare('SELECT * FROM Marjastaja');
         $query->execute();
         $rows = $query->fetchAll();
@@ -53,7 +53,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function find($id) {
+    public static function hae($id) {
         $query = DB::connection()->prepare('SELECT * FROM Marjastaja WHERE id=:id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
@@ -72,7 +72,7 @@ class Marjastaja extends BaseModel {
         return null;
     }
 
-    public static function findBySuosikkimarja($marja_id) {
+    public static function haeSuosikkimarjanMukaan($marja_id) {
         // Kysely, jossa haetaan tietyn marjan suokiksi lisänneet käyttäjät Suosikkimarja- ja Marja-taulujen perusteella.
         $query = DB::connection()->prepare('SELECT mj.id, mj.kayttajatunnus, mj.salasana, mj.etunimi, mj.sukunimi FROM Marjastaja mj, Suosikkimarja sm, Marja m WHERE m.id = :marja_id AND m.id = sm.marja_id AND sm.marjastaja_id = mj.id');
         $query->execute(array('marja_id' => $marja_id));
@@ -91,7 +91,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function findByMarja($marja_id) {
+    public static function haeMarjanMukaan($marja_id) {
         // Kysely, jossa haetaan tiettyä marjaa poimineet uniikit käyttäjät.
         $query = DB::connection()->prepare('SELECT DISTINCT mj.id, mj.kayttajatunnus, mj.salasana, mj.etunimi, mj.sukunimi FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '
                 . 'WHERE mj.id = p.marjastaja_id AND p.id = k.paikka_id AND k.id = ms.kaynti_id AND ms.marja_id = :marja_id');
@@ -111,7 +111,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function findByMarjaAndYear($marja_id, $vuosi) {
+    public static function haeMarjanJaVuodenMukaan($marja_id, $vuosi) {
         // Kysely, jossa haetaan tiettyä marjaa tiettynä vuonna poimineet uniikit käyttäjät.
         $query = DB::connection()->prepare('SELECT DISTINCT mj.id, mj.kayttajatunnus, mj.salasana, mj.etunimi, mj.sukunimi FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '
                 . 'WHERE mj.id = p.marjastaja_id AND p.id = k.paikka_id AND k.id = ms.kaynti_id AND ms.marja_id = :marja_id AND extract(year from k.aika)=:vuosi');
@@ -131,7 +131,7 @@ class Marjastaja extends BaseModel {
         return $marjastajat;
     }
 
-    public static function topPickersByMarjaAndYear($marja_id, $vuosi) {
+    public static function karkipoimijatMarjanJaVuodenMukaan($marja_id, $vuosi) {
         // Kysely, jossa haetaan tiettyä marjaa tiettynä vuonna poimineet uniikit käyttäjät saaliin määrän mukaisessa järjestyksessä. Palauttaa taulukon, jossa etunimi, sukunimi, poimittu määrä 
         // annettuna vuonna ja poimittu määrä koko historian aikana.
         $query = DB::connection()->prepare('SELECT mj.etunimi AS etun, mj.sukunimi AS sukun, SUM(ms.maara) AS saalis FROM Marjastaja mj, Paikka p, Kaynti k, Marjasaalis ms '
@@ -151,7 +151,7 @@ class Marjastaja extends BaseModel {
         return $karkipoimijat;
     }
 
-    public function validate_kayttajatunnus() {
+    public function validoi_kayttajatunnus() {
         $errors = array();
         $newerrors = $this->validate_string_length($this->kayttajatunnus, 1, 120);
         if (!empty($newerrors)) {
@@ -161,7 +161,7 @@ class Marjastaja extends BaseModel {
         return $errors;
     }
 
-    public function validate_salasana() {
+    public function validoi_salasana() {
         $errors = array();
         $newerrors = $this->validate_string_length($this->salasana, 1, 120);
         if (!empty($newerrors)) {
