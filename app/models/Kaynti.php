@@ -6,7 +6,7 @@
  *
  * @author mkotola
  */
-class Kaynti {
+class Kaynti extends BaseModel {
 
     public $id, $paikka_id, $aika;
 

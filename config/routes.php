@@ -52,14 +52,26 @@ $routes->post('/marjastaja/:id/paikat/save', function($id) {
 //});
 
 
+// Käynnin poistaminen.
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/poista', function($marjastaja_id, $paikka_id, $kaynti_id) {
+    
+    PaikkaController::poistaKaynti($marjastaja_id, $paikka_id, $kaynti_id);
+});
+
+// Käynnin editointinäkymä
+$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/muokkaa', function($marjastaja_id, $paikka_id, $kaynti_id) {
+    PaikkaController::muokkaaKaynti($marjastaja_id, $paikka_id, $kaynti_id);
+});
+
+
 // Paikan poistaminen.
-$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/delete', function($marjastaja_id, $paikka_id) {
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/poista', function($marjastaja_id, $paikka_id) {
     
     PaikkaController::poista($marjastaja_id, $paikka_id);
 });
 
 // Paikan editointinäkymä
-$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/edit', function($marjastaja_id, $paikka_id) {
+$routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/muokkaa', function($marjastaja_id, $paikka_id) {
     PaikkaController::muokkaa($marjastaja_id, $paikka_id);
 });
 

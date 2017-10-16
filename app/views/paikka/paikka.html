@@ -1,7 +1,7 @@
 {% import "macros/forms.html" as forms %}      
 {% extends "base.html" %}
 {% block content %}
-<h1>{{paikka.nimi}}</h1>
+<h1>{{paikkatiedot.paikka.nimi}}</h1>
 <button class="btn btn-danger">Paikan muokkaus ja poisto toteutettu. Käyntien ja marjasaaliiden toimintoja ei vielä toteutettu.</button>
 
 <div id="mapSmall"></div>
@@ -9,26 +9,29 @@
 
 <ul>
     <li><strong>Marjastaja: </strong>{{marjastaja.etunimi}} {{marjastaja.sukunimi}}</li>
-    <li><strong>P: </strong> {{paikka.p}}</li>
-    <li><strong>I: </strong> {{paikka.i}}</li>
+    <li><strong>P: </strong> {{paikkatiedot.paikka.p}}</li>
+    <li><strong>I: </strong> {{paikkatiedot.paikka.i}}</li>
 </ul>
 
 {% block muokkaaPaikkaa %}
 {% endblock %}
 
-{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikka.id}/edit")}}
-{{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikka.id}/delete", "Poista paikka")}}
+{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
+{{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/poista", "Poista paikka")}}
 <!--<button class="btn btn-primary">Muokkaa</button>
 <button class="btn btn-danger">Poista paikka</button>-->
 <h2>Käynnit</h2>
 <table>
 
     <tbody>
+        {% for kaynti in paikkatiedot.kayntikohtaisetMarjasaaliit %}
         <tr>
             <td>
-                <strong>9.9.2017 17:00:00</strong>
-                <button class="btn btn-primary">Muokkaa</button>
-                <button class="btn btn-danger">Poista</button>
+                <strong>{{kaynti[1]}}</strong>
+                {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/muokkaa")}}
+                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/poista")}}
+<!--                <button class="btn btn-primary">Muokkaa</button>
+                <button class="btn btn-danger">Poista</button>-->
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -39,27 +42,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for marjasaalis in kaynti[2] %}
                         <tr>
-                            <td>Mustikka</td>
-                            <td>1.0</td>
-                            <td>Taivaallisen hyviä, kypsiä mustikoita!</td>
+                            <td>{{kaynti[3][loop.index0]}}</td> <!-- Väliaikainen, marjan id, korvataan marjan nimellä. -->
+                            <td>{{marjasaalis.maara}}</td>
+                            <td>{{marjasaalis.kuvaus}}</td>
                             <td><button class="btn btn-primary">Muokkaa</button>
                             <button class="btn btn-danger">Poista</button></td>
                         </tr>
-                        <tr>
-                            <td>Puolukka</td>
-                            <td>0.0</td>
-                            <td>Vähän olivat raakoja vielä. En poiminut.</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
-                        </tr>
-                        <tr>
-                            <td>Kanttarelli</td>
-                            <td>2.0</td>
-                            <td>Isoja sieniä oli, oikein kunnon esiintymä mäen itäsivulla.</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
-                        </tr>
+                        {% endfor %}
                         <tr>
                             <td></td>
                             <td></td>
@@ -70,52 +61,7 @@
                 </table>
             </td>
         </tr>
-        <tr>
-            <td>
-                <strong>10.9.2017 16:00:00</strong>
-                <button class="btn btn-primary">Muokkaa</button>
-                <button class="btn btn-danger">Poista</button>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Marja</th>
-                            <th>Poimittu määrä (kg)</th>
-                            <th>Kommentti</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mustikka</td>
-                            <td>2.0</td>
-                            <td>Edelleen paljon mustikoita. Jatkoin edellisen päivän perään.</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
-                        </tr>
-                        <tr>
-                            <td>Puolukka</td>
-                            <td>0.1</td>
-                            <td>Edelleen vähän raakoja, otin pienen testierän.</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
-                        </tr>
-                        <tr>
-                            <td>Kanttarelli</td>
-                            <td>0.0</td>
-                            <td>En löytänyt enempää.</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><button class="btn btn-primary">Lisää marjamerkintä</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
+        {% endfor %}
     </tbody>
 </table>
 <button class="btn btn-primary">Lisää uusi käynti</button>
@@ -125,17 +71,17 @@
 
     function initMap() {
         var mapProp = {
-            center: new google.maps.LatLng({{paikka.p}}, {{paikka.i}}),
+            center: new google.maps.LatLng({{paikkatiedot.paikka.p}}, {{paikkatiedot.paikka.i}}),
             zoom: 12,
         };
         var map = new google.maps.Map(document.getElementById("mapSmall"), mapProp);
 
-        var markerinSijainti = {lat: {{paikka.p}}, lng: {{paikka.i}}};
-        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikka.nimi}}'});
+        var markerinSijainti = {lat: {{paikkatiedot.paikka.p}}, lng: {{paikkatiedot.paikka.i}}};
+        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikkatiedot.paikka.nimi}}'});
             
 
         var infowindow = new google.maps.InfoWindow({
-            content: "{{paikka.nimi}}"
+            content: "{{paikkatiedot.paikka.nimi}}"
         });
         
         infowindow.open(map, marker);        
