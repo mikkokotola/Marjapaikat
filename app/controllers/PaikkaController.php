@@ -42,7 +42,7 @@ class PaikkaController extends BaseController {
         }
     }
 
-//    // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI TOIMI VIELÄ.
+//    // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI KÄYTÖSSÄ, POISTETAAN.
 //    public static function tallennaPaikka($marjastaja_id) {
 //        if (self::check_logged_in_user($marjastaja_id)) {
 //            $params = $_GET;
@@ -121,10 +121,9 @@ class PaikkaController extends BaseController {
     }
 
     // Paikan poistaminen
-    public static function poista($marjastaja_id, $paikka_id) {
-        if (self::check_logged_in_user($marjastaja_id)) {
-            $paikka = Paikka::hae($paikka_id);
-            // Kutsutaan Paikka-luokan metodia delete, joka poistaa marjan sen id:llä
+    public static function poistaPaikka($marjastaja_id, $paikka_id) {
+        $paikka = Paikka::hae($paikka_id);
+        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $paikka->poista();
 
             // Ohjataan käyttäjä paikkojen listaussivulle ilmoituksen kera
@@ -135,26 +134,119 @@ class PaikkaController extends BaseController {
     }
 
     // Paikan muokkaamisnäkymä
-    public static function muokkaa($marjastaja_id, $paikka_id) {
+    public static function muokkaaPaikka($marjastaja_id, $paikka_id) {
         $paikka = Paikka::hae($paikka_id);
         if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikkatiedot = self::haePaikanData($paikka_id);
             $attributes = array(
                 'marjastaja_id' => $marjastaja_id,
                 'p' => $paikka->p,
                 'i' => $paikka->i,
                 'nimi' => $paikka->nimi
             );
-            View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+            View::make('paikka/muokkaapaikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
 
     // Paikan muokkaamislomakkeen käsittely.
-    public static function muokkausKasittele($marjastaja_id, $paikka_id) {
-        if (self::check_logged_in_user($marjastaja_id)) {
+    public static function paikanMuokkausKasittele($marjastaja_id, $paikka_id) {
+        $paikka = Paikka::hae($paikka_id);
+        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
+            $attributes = array(
+                'id' => $paikka_id,
+                'marjastaja_id' => $marjastaja_id,
+                'p' => doubleval($params['p']),
+                'i' => doubleval($params['i']),
+                'nimi' => $params['nimi']
+            );
+
+            // Parsitaan stringeistä p ja i doublet.
+            $paikka = new Paikka($attributes);
+            $errors = $paikka->errors();
+
+            //Kint::dump($paikka);
+
+            if (count($errors) == 0) {
+                // Muutettava paikka on validi.
+                $paikka->tallennaMuuttunut();
+                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Paikan tiedot tallennettu'));
+            } else {
+                // Paikassa oli vikaa, ei muuteta.
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikka = Paikka::hae($paikka_id);
+
+                View::make('paikka/muokkaapaikka.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+            }
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+
+//        $paikka = Paikka::find($paikka_id);
+//        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+//            View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja));
+//        } else {
+//            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+//        }
+    }
+
+    // Käynnin poistaminen
+    public static function poistaKaynti($marjastaja_id, $paikka_id, $kaynti_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $kaynti->poista();
+
+            //$marjastaja = Marjastaja::hae($marjastaja_id);
+            //$paikkatiedot = self::haePaikanData($paikka_id);
+
+            // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
+            Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Käynti on poistettu'));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
+    // Käynnin muokkaamisnäkymä
+    public static function muokkaaKaynti($marjastaja_id, $paikka_id, $kaynti_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikkatiedot = self::haePaikanData($paikka_id);
+            $muokattavanKaynninNro = 0;
+            
+            foreach ($paikkatiedot['kaynnit'] as $key => $muokattavaKaynti) {
+                if ($muokattavaKaynti->id == $kaynti->id) {
+                    $muokattavanKaynninNro = $key;
+                }
+            }
+            
+            $attributes = array(
+                'aika' => $kaynti->aika
+            );
+            
+//            Kint::dump($kaynti);
+//            Kint::dump($paikkatiedot);
+//            Kint::dump($muokattavanKaynninNro);
+//            Kint::dump($attributes);
+            View::make('paikka/muokkaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokattavanKaynninNro' => $muokattavanKaynninNro, 'attributes' => $attributes));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
+    // Käynnin muokkaamislomakkeen käsittely.
+    public static function kaynninMuokkausKasittele($marjastaja_id, $paikka_id, $kaynti_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $params = $_POST;
+            // KESKEN
             $attributes = array(
                 'id' => $paikka_id,
                 'marjastaja_id' => $marjastaja_id,
@@ -183,48 +275,8 @@ class PaikkaController extends BaseController {
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
-
-//        $paikka = Paikka::find($paikka_id);
-//        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
-//            View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja));
-//        } else {
-//            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-//        }
     }
-
-    // Paikan poistaminen
-    public static function poistaKaynti($marjastaja_id, $paikka_id, $kaynti_id) {
-        if (self::check_logged_in_user($marjastaja_id)) {
-            $kaynti = Kaynti::hae($kaynti_id);
-            $kaynti->poista();
-
-            $marjastaja = Marjastaja::hae($marjastaja_id);
-            $paikkatiedot = self::haePaikanData($paikka_id);
-
-            // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
-            Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Käynti on poistettu'));
-        } else {
-            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-        }
-    }
-
-    // Paikan muokkaamisnäkymä
-    public static function muokkaaKaynti($marjastaja_id, $paikka_id, $kaynti_id) {
-        $paikka = Paikka::hae($paikka_id);
-        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
-            $marjastaja = Marjastaja::hae($marjastaja_id);
-            $attributes = array(
-                'marjastaja_id' => $marjastaja_id,
-                'p' => $paikka->p,
-                'i' => $paikka->i,
-                'nimi' => $paikka->nimi
-            );
-            View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
-        } else {
-            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-        }
-    }
-
+    
     // Apumetodi yksittäisen paikan näkymän muodostamiseen.
     private static function haePaikanData($paikka_id) {
         $paikka = Paikka::hae($paikka_id);

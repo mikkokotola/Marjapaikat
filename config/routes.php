@@ -63,16 +63,21 @@ $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/muo
     PaikkaController::muokkaaKaynti($marjastaja_id, $paikka_id, $kaynti_id);
 });
 
+// Käynnin muuttuneen tiedon tallentaminen
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/muokkaa', function($marjastaja_id, $paikka_id, $kaynti_id) {
+    PaikkaController::kaynninMuokkausKasittele($marjastaja_id, $paikka_id, $kaynti_id);
+});
+
 
 // Paikan poistaminen.
 $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/poista', function($marjastaja_id, $paikka_id) {
     
-    PaikkaController::poista($marjastaja_id, $paikka_id);
+    PaikkaController::poistaPaikka($marjastaja_id, $paikka_id);
 });
 
 // Paikan editointinäkymä
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/muokkaa', function($marjastaja_id, $paikka_id) {
-    PaikkaController::muokkaa($marjastaja_id, $paikka_id);
+    PaikkaController::muokkaaPaikka($marjastaja_id, $paikka_id);
 });
 
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
@@ -82,9 +87,9 @@ $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaj
 });
 
 // Paikan tietojen muuttaminen.
-$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/saveChanged', function($marjastaja_id, $paikka_id) {
+$routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/muokkaa', function($marjastaja_id, $paikka_id) {
     
-    PaikkaController::muokkausKasittele($marjastaja_id, $paikka_id);
+    PaikkaController::paikanMuokkausKasittele($marjastaja_id, $paikka_id);
 });
 
 

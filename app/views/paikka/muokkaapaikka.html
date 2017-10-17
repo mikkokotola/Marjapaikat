@@ -1,7 +1,7 @@
    
 {% extends "/paikka/paikka.html" %}
-{% block muokkaaPaikkaa %}
-<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikka.id}}/saveChanged" style="display: block;">
+{% block muokkaaPaikka %}
+<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/muokkaa" style="display: block;">
     <div class="form-group">
         <label>Uusi nimi</label>
         <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">

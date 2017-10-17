@@ -13,7 +13,7 @@
     <li><strong>I: </strong> {{paikkatiedot.paikka.i}}</li>
 </ul>
 
-{% block muokkaaPaikkaa %}
+{% block muokkaaPaikka %}
 {% endblock %}
 
 {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
@@ -28,9 +28,12 @@
         <tr>
             <td>
                 <strong>{{kaynti[1]}}</strong>
+                
                 {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/muokkaa")}}
                 {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/poista")}}
-<!--                <button class="btn btn-primary">Muokkaa</button>
+                {% block muokkaaKaynti %}
+                {% endblock %}
+<!--            <button class="btn btn-primary">Muokkaa</button>
                 <button class="btn btn-danger">Poista</button>-->
                 <table class="table table-bordered table-striped">
                     <thead>
