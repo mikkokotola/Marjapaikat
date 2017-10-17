@@ -67,7 +67,7 @@
         var name = escape(document.getElementById('name').value);
         var latlng = lisattavaMarker.getPosition();
         var params = "nimi=" + name + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
-        var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/save';
+        var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallennaUusi';
 
         var http = new XMLHttpRequest();
         

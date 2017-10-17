@@ -145,7 +145,6 @@ class Paikka extends BaseModel {
                 }
             }
 
-            $errors[] = "I-koordinaatin täytyy olla desimaaliluku.";
         }
         return $errors;
     }

@@ -193,6 +193,58 @@ class PaikkaController extends BaseController {
 //        }
     }
 
+    // Käynnin lisäämisnäkymä.
+    public static function lisaaKaynti($marjastaja_id, $paikka_id) {
+        $paikka = Paikka::hae($paikka_id);
+        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikkatiedot = self::haePaikanData($paikka_id);
+
+            View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
+    // Käynnin lisäämislomakkeen käsittely.
+    public static function tallennaUusiKaynti($marjastaja_id, $paikka_id) {
+        $paikka = Paikka::hae($paikka_id);
+        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $params = $_POST;
+
+            $pvm = $params['pvm'];
+            $kellonaika = $params['kellonaika'];
+            // Yhdistetään stringeistä pvm ja kellonaika timestamp.
+            $aikaleima = $pvm . " " . $kellonaika;
+            $attributes = array(
+                'paikka_id' => $paikka_id,
+                'aika' => $aikaleima
+            );
+
+            $kaynti = new Kaynti($attributes);
+            $errors = $kaynti->errors();
+
+            if (count($errors) == 0) {
+                // Lisättävä käynti on validi.
+                $kaynti->tallenna();
+                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Uusi käynti lisätty.'));
+            } else {
+                // Käynnissä oli vikaa, ei lisätä.
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikkatiedot = self::haePaikanData($paikka_id);
+
+                $attributes = array(
+                    'pvm' => $pvm,
+                    'kellonaika' => $kellonaika
+                );
+                
+                View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+            }
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
     // Käynnin poistaminen
     public static function poistaKaynti($marjastaja_id, $paikka_id, $kaynti_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -202,7 +254,6 @@ class PaikkaController extends BaseController {
 
             //$marjastaja = Marjastaja::hae($marjastaja_id);
             //$paikkatiedot = self::haePaikanData($paikka_id);
-
             // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
             Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Käynti on poistettu'));
         } else {
@@ -215,21 +266,26 @@ class PaikkaController extends BaseController {
         $paikka = Paikka::hae($paikka_id);
         $kaynti = Kaynti::hae($kaynti_id);
         if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
-            
+
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikkatiedot = self::haePaikanData($paikka_id);
             $muokattavanKaynninNro = 0;
-            
+            $pvm = '2017-01-01';
+            $kellonaika = '00:00';
+
             foreach ($paikkatiedot['kaynnit'] as $key => $muokattavaKaynti) {
                 if ($muokattavaKaynti->id == $kaynti->id) {
                     $muokattavanKaynninNro = $key;
+                    $pvm = $paikkatiedot['kaynnitJaSaaliit'][$key]['pvm'];
+                    $kellonaika = $paikkatiedot['kaynnitJaSaaliit'][$key]['kellonaika'];
                 }
             }
-            
+
             $attributes = array(
-                'aika' => $kaynti->aika
+                'pvm' => $pvm,
+                'kellonaika' => $kellonaika
             );
-            
+
 //            Kint::dump($kaynti);
 //            Kint::dump($paikkatiedot);
 //            Kint::dump($muokattavanKaynninNro);
@@ -246,60 +302,160 @@ class PaikkaController extends BaseController {
         $kaynti = Kaynti::hae($kaynti_id);
         if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
-            // KESKEN
+
+            $pvm = $params['pvm'];
+            $kellonaika = $params['kellonaika'];
+            // Yhdistetään stringeistä pvm ja kellonaika timestamp.
+            $aikaleima = $pvm . " " . $kellonaika;
             $attributes = array(
-                'id' => $paikka_id,
-                'marjastaja_id' => $marjastaja_id,
-                'p' => doubleval($params['p']),
-                'i' => doubleval($params['i']),
-                'nimi' => $params['nimi']
+                'id' => $kaynti_id,
+                'paikka_id' => $paikka_id,
+                'aika' => $aikaleima
             );
 
-            // Parsitaan stringeistä p ja i doublet.
-            $paikka = new Paikka($attributes);
-            $errors = $paikka->errors();
-
-            //Kint::dump($paikka);
+            $kaynti = new Kaynti($attributes);
+            $errors = $kaynti->errors();
 
             if (count($errors) == 0) {
-                // Muutettava paikka on validi.
-                $paikka->tallennaMuuttunut();
-                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Paikan tiedot tallennettu'));
+                // Muutettava käynti on validi.
+                $kaynti->tallennaMuuttunut();
+                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Käynnin tiedot tallennettu'));
             } else {
-                // Paikassa oli vikaa, ei muuteta.
+                // Käynnissä oli vikaa, ei muuteta.
                 $marjastaja = Marjastaja::hae($marjastaja_id);
-                $paikka = Paikka::hae($paikka_id);
+                $paikkatiedot = self::haePaikanData($paikka_id);
 
-                View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                $muokattavanKaynninNro = 0;
+
+                foreach ($paikkatiedot['kaynnit'] as $key => $muokattavaKaynti) {
+                    if ($muokattavaKaynti->id == $kaynti->id) {
+                        $muokattavanKaynninNro = $key;
+                    }
+                }
+
+                $attributes = array(
+                    'pvm' => $pvm,
+                    'kellonaika' => $kellonaika
+                );
+
+                View::make('paikka/muokkaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokattavanKaynninNro' => $muokattavanKaynninNro, 'errors' => $errors, 'attributes' => $attributes));
+            }
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
+    
+    // Marjasaaliin lisäämisnäkymä.
+    public static function lisaaSaalis($marjastaja_id, $paikka_id, $kaynti_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikkatiedot = self::haePaikanData($paikka_id);
+            $kaikkiMarjat = Marja::haeKaikki();
+            View::make('paikka/lisaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'kayntiJohonLisataan' => $kaynti, 'kaikkiMarjat' => $kaikkiMarjat));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+    
+    // Marjasaaliin lisäämislomakkeen käsittely.
+    public static function tallennaUusiSaalis($marjastaja_id, $paikka_id, $kaynti_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $params = $_POST;
+
+            $attributes = array(
+                'marja_id' => $params['marja_id'],
+                'kaynti_id' => $kaynti_id,
+                'maara' => doubleval($params['maara']),
+                'kuvaus' => $params['kuvaus']
+            );
+
+            $marjasaalis = new Marjasaalis($attributes);
+            
+            $errors = $marjasaalis->errors();
+
+            if (count($errors) == 0) {
+                // Lisättävä marjasaalis on validi.
+                $marjasaalis->tallenna();
+                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Uusi marjasaalis lisätty.'));
+            } else {
+                // Marjasaaliissa oli vikaa, ei lisätä.
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikkatiedot = self::haePaikanData($paikka_id);
+                $kaikkiMarjat = Marja::haeKaikki();
+
+                View::make('paikka/lisaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'kayntiJohonLisataan' => $kaynti, 'kaikkiMarjat' => $kaikkiMarjat, 'errors' => $errors, 'attributes' => $attributes));
+                
             }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
     
+    // Marjasaaliin poistaminen
+    public static function poistaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        $saalis = Marjasaalis::haeMarjanJaKaynninMukaan($marja_id, $kaynti_id);
+        if ($kaynti_id == $saalis->kaynti_id && $paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $saalis->poista();
+
+            //$marjastaja = Marjastaja::hae($marjastaja_id);
+            //$paikkatiedot = self::haePaikanData($paikka_id);
+            // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
+            Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Marjasaalis on poistettu'));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
+
+    
     // Apumetodi yksittäisen paikan näkymän muodostamiseen.
     private static function haePaikanData($paikka_id) {
+
         $paikka = Paikka::hae($paikka_id);
         $kaynnit = Kaynti::haePaikanMukaan($paikka_id);
-        $kayntikohtaisetMarjasaaliit = array();
+
+        $format = 'Y-m-d H:i:s';
+
+
+
+        $kaynnitJaSaaliit = array();
         foreach ($kaynnit as $kaynti) {
-            $kayntikohtainenMarjasaalis = array();
-            $kayntikohtainenMarjasaalis[] = $kaynti->id;
-            $kayntikohtainenMarjasaalis[] = $kaynti->aika;
-            //$kayntikohtainenMarjasaalis[] = Marja::hae($id)
-            $kayntikohtainenMarjasaalis[] = Marjasaalis::haeKaynninMukaan($kaynti->id);
-            $kayntikohtainenMarjasaalis[] = array();
-            foreach ($kayntikohtainenMarjasaalis[2] as $marjasaalis) {
+            $pvmKellonaika = $kaynti->aika;
+            $pvm = substr($pvmKellonaika, 0, 10);
+            $kellonaika = substr($pvmKellonaika, 11, 5);
+
+            //$dateTime = DateTime::createFromFormat($format, $pvmKellonaika);
+//            $pvm = DateTime::createFromFormat('Y-m-d', $pvmKellonaika);
+//            $kellonaika = DateTime::createFromFormat('H:i', $pvmKellonaika);
+//            $pvm = $dateTime->format('Y-m-d'); 
+//            $kellonaika = $dateTime->format('H:i');
+            $marjasaaliit = Marjasaalis::haeKaynninMukaan($kaynti->id);
+            $marjat = array();
+            foreach ($marjasaaliit as $marjasaalis) {
                 $marjannimi = Marja:: hae($marjasaalis->marja_id)->nimi;
-                array_push($kayntikohtainenMarjasaalis[3], $marjannimi);
+                array_push($marjat, $marjannimi);
             }
-            $kayntikohtaisetMarjasaaliit[] = $kayntikohtainenMarjasaalis;
+            $kayntiJaMarjasaaliit = array(
+                'id' => $kaynti->id,
+                'pvm' => $pvm,
+                'kellonaika' => $kellonaika,
+                'marjat' => $marjat,
+                'marjasaaliit' => $marjasaaliit
+            );
+            $kaynnitJaSaaliit[] = $kayntiJaMarjasaaliit;
         }
 
         $paikkatiedot = array(
             'paikka' => $paikka,
             'kaynnit' => $kaynnit,
-            'kayntikohtaisetMarjasaaliit' => $kayntikohtaisetMarjasaaliit
+            'kaynnitJaSaaliit' => $kaynnitJaSaaliit
         );
 
         return $paikkatiedot;

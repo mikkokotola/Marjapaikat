@@ -1,0 +1,33 @@
+   
+{% extends "/paikka/paikka.html" %}
+{% block lisaaSaalis %}
+
+{% if kaynti.id == kayntiJohonLisataan.id %}
+<p>
+Uusi marjamerkintä
+</p>
+<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kayntiJohonLisataan.id}}/saalis/tallennaUusi" style="display: block;">
+    <div class="form-group">
+        <label>Marja</label>
+        <select class="form-control" name="marja_id">
+            {% for marja in kaikkiMarjat %}
+                {% if attributes.marja_id == marja.id %}
+                    <option value="{{marja.id}}" selected="selected">{{marja.nimi}}</option>
+                {% else %}
+                    <option value="{{marja.id}}">{{marja.nimi}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <label>Poimittu määrä (kg)</label>
+        <input type="number" name="maara" value="{{attributes.maara}} step="any"">
+        <label>Kommentti</label>
+        <input type="text" name="kuvaus" value="{{attributes.kuvaus}}">
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Tallenna</button>
+    </div>
+</form>
+
+{% endif %}
+{% endblock %}

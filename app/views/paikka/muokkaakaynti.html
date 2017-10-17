@@ -2,13 +2,12 @@
 {% extends "/paikka/paikka.html" %}
 {% block muokkaaKaynti %}
 {% if muokattavanKaynninNro == loop.index0 %}
-<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{kaynti.id}}/muokkaa" style="display: block;">
+<form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/muokkaa" style="display: block;">
     <div class="form-group">
         <label>Päivämäärä</label>
-        <input type="date" name="pvm"><br>
+        <input type="date" name="pvm" value="{{attributes.pvm}}"><br>
         <label>Kellonaika</label>
-        <input type="time" name="kellonaika">
-       
+        <input type="time" name="kellonaika" value="{{attributes.kellonaika}}">
     </div>
 
     <div class="form-group">

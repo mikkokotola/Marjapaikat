@@ -24,17 +24,17 @@
 <table>
 
     <tbody>
-        {% for kaynti in paikkatiedot.kayntikohtaisetMarjasaaliit %}
+        {% for kaynti in paikkatiedot.kaynnitJaSaaliit %}
         <tr>
             <td>
-                <strong>{{kaynti[1]}}</strong>
-                
-                {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/muokkaa")}}
-                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti[0]}/poista")}}
+                <strong>{{kaynti.pvm}} {{kaynti.kellonaika}}</strong>
+
+                {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/muokkaa")}}
+                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/poista")}}
                 {% block muokkaaKaynti %}
                 {% endblock %}
-<!--            <button class="btn btn-primary">Muokkaa</button>
-                <button class="btn btn-danger">Poista</button>-->
+                <!--            <button class="btn btn-primary">Muokkaa</button>
+                                <button class="btn btn-danger">Poista</button>-->
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -45,50 +45,52 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for marjasaalis in kaynti[2] %}
+                        {% for marjasaalis in kaynti.marjasaaliit %}
                         <tr>
-                            <td>{{kaynti[3][loop.index0]}}</td> <!-- Väliaikainen, marjan id, korvataan marjan nimellä. -->
+                            <td>{{kaynti.marjat[loop.index0]}}</td> 
                             <td>{{marjasaalis.maara}}</td>
                             <td>{{marjasaalis.kuvaus}}</td>
-                            <td><button class="btn btn-primary">Muokkaa</button>
-                            <button class="btn btn-danger">Poista</button></td>
+                            <td>{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
+                                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</td>
                         </tr>
                         {% endfor %}
+                        
                         <tr>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td><button class="btn btn-primary">Lisää marjamerkintä</button></td>
+                            <td>
+                                <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/uusi" class="btn btn-primary" >Lisää marjamerkintä</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+                {% block lisaaSaalis %}
+                {% endblock %}
             </td>
         </tr>
         {% endfor %}
+        {% block lisaaKaynti %}
+        {% endblock %}
     </tbody>
 </table>
-<button class="btn btn-primary">Lisää uusi käynti</button>
+<a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
 
 <script>
 
 
     function initMap() {
-        var mapProp = {
-            center: new google.maps.LatLng({{paikkatiedot.paikka.p}}, {{paikkatiedot.paikka.i}}),
+    var mapProp = {
+    center: new google.maps.LatLng({{paikkatiedot.paikka.p}}, {{paikkatiedot.paikka.i}}),
             zoom: 12,
-        };
-        var map = new google.maps.Map(document.getElementById("mapSmall"), mapProp);
-
-        var markerinSijainti = {lat: {{paikkatiedot.paikka.p}}, lng: {{paikkatiedot.paikka.i}}};
-        var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikkatiedot.paikka.nimi}}'});
-            
-
-        var infowindow = new google.maps.InfoWindow({
-            content: "{{paikkatiedot.paikka.nimi}}"
-        });
-        
-        infowindow.open(map, marker);        
-
+    };
+    var map = new google.maps.Map(document.getElementById("mapSmall"), mapProp);
+    var markerinSijainti = {lat: {{paikkatiedot.paikka.p}}, lng: {{paikkatiedot.paikka.i}}};
+    var marker = new google.maps.Marker({position: markerinSijainti, map: map, title: '{{paikkatiedot.paikka.nimi}}'});
+    var infowindow = new google.maps.InfoWindow({
+    content: "{{paikkatiedot.paikka.nimi}}"
+    });
+    infowindow.open(map, marker);
     }
 
 </script>

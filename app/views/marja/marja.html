@@ -7,8 +7,8 @@
 
 {% if user_logged_in %}
 <!--    <a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>-->
-    {{forms.edit_button("#{base_path}/marja/#{marjatiedot.marja.id}/rename", "Muokkaa nimeä")}}
-    {{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/delete")}}
+    {{forms.edit_button("#{base_path}/marja/#{marjatiedot.marja.id}/muokkaa", "Muokkaa nimeä")}}
+    {{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/poista")}}
 {% endif %}
 
 

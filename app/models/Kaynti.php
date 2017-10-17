@@ -92,10 +92,12 @@ class Kaynti extends BaseModel {
         
         // Tarkastetaan, että on timestamp.
         $format = 'Y-m-d H:i:s';
+        $format2 = 'Y-m-d H:i';
         $d = DateTime::createFromFormat($format, $this->aika);
+        $d2 = DateTime::createFromFormat($format2, $this->aika);
         
-        if (!($d && $d->format($format) == $this->aika)) {
-            $errors[] = "Käynnin aika ei ole validi. Syötä muodossa YYYY-MM-DD HH:MM:SS.SSSS";
+        if (!(($d && $d->format($format) == $this->aika) || ($d2 && $d2->format($format2) == $this->aika))) {
+            $errors[] = "Käynnin aika ei ole validi. Syötä muodossa YYYY-MM-DD HH:MM:SS.";
         }
         
         return $errors;

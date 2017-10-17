@@ -1,7 +1,7 @@
    
 {% extends "/marja/marja.html" %}
 {% block muokkaaMarjaa %}
-<form method="post" action="{{base_path}}/marja/rename" style="display: block;">
+<form method="post" action="{{base_path}}/marja/muokkaa" style="display: block;">
     <div class="form-group">
         <label>Uusi nimi</label>
         <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
