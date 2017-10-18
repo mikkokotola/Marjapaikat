@@ -17,7 +17,7 @@ class Marjasaalis extends BaseModel {
     }
 
     public static function haeKaikki() {
-        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis;');
+        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis ORDER BY marja_id ASC;');
         $query->execute();
         $rows = $query->fetchAll();
         $marjasaaliit = array();
@@ -35,7 +35,7 @@ class Marjasaalis extends BaseModel {
     }
 
     public static function haeMarjanMukaan($marja_id) {
-        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis WHERE marja_id=:marja_id;');
+        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis WHERE marja_id=:marja_id ORDER BY kaynti_id ASC;');
         $query->execute(array('marja_id' => $marja_id));
         $rows = $query->fetchAll();
         $marjasaaliit = array();
@@ -52,7 +52,7 @@ class Marjasaalis extends BaseModel {
     }
 
     public static function haeKaynninMukaan($kaynti_id) {
-        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis WHERE kaynti_id=:kaynti_id;');
+        $query = DB::connection()->prepare('SELECT * FROM Marjasaalis WHERE kaynti_id=:kaynti_id ORDER BY marja_id ASC;');
         $query->execute(array('kaynti_id' => $kaynti_id));
         $rows = $query->fetchAll();
         $marjasaaliit = array();

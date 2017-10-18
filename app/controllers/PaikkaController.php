@@ -396,6 +396,22 @@ class PaikkaController extends BaseController {
         }
     }
     
+    // Marjasaaliin muokkausnäkymä.
+    public static function muokkaaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        $saalis = Marjasaalis::haeMarjanJaKaynninMukaan($marja_id, $kaynti_id);
+        if ($kaynti_id == $saalis->kaynti_id && $paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $marjastaja = Marjastaja::hae($marjastaja_id);
+            $paikkatiedot = self::haePaikanData($paikka_id);
+            $kaikkiMarjat = Marja::haeKaikki();
+            View::make('paikka/muokkaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'saalisJotaMuokataan' => $saalis, 'kaikkiMarjat' => $kaikkiMarjat));
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+    
+    
     // Marjasaaliin poistaminen
     public static function poistaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -404,9 +420,6 @@ class PaikkaController extends BaseController {
         if ($kaynti_id == $saalis->kaynti_id && $paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $saalis->poista();
 
-            //$marjastaja = Marjastaja::hae($marjastaja_id);
-            //$paikkatiedot = self::haePaikanData($paikka_id);
-            // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
             Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Marjasaalis on poistettu'));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));

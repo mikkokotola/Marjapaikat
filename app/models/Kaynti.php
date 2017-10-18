@@ -16,7 +16,7 @@ class Kaynti extends BaseModel {
     }
 
     public static function haeKaikki() {
-        $query = DB::connection()->prepare('SELECT * FROM Kaynti');
+        $query = DB::connection()->prepare('SELECT * FROM Kaynti ORDER BY aika DESC');
         $query->execute();
         $rows = $query->fetchAll();
         $kaynnit = array();
@@ -49,7 +49,7 @@ class Kaynti extends BaseModel {
     }
 
     public static function haePaikanMukaan($paikka_id) {
-        $query = DB::connection()->prepare('SELECT * FROM Kaynti WHERE paikka_id=:paikka_id');
+        $query = DB::connection()->prepare('SELECT * FROM Kaynti WHERE paikka_id=:paikka_id ORDER BY aika DESC');
         $query->execute(array('paikka_id' => $paikka_id));
         $rows = $query->fetchAll();
         $kaynnit = array();

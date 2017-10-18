@@ -2,7 +2,6 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>{{paikkatiedot.paikka.nimi}}</h1>
-<button class="btn btn-danger">Paikan muokkaus ja poisto toteutettu. Käyntien ja marjasaaliiden toimintoja ei vielä toteutettu.</button>
 
 <div id="mapSmall"></div>
 
@@ -47,14 +46,19 @@
                     <tbody>
                         {% for marjasaalis in kaynti.marjasaaliit %}
                         <tr>
-                            <td>{{kaynti.marjat[loop.index0]}}</td> 
-                            <td>{{marjasaalis.maara}}</td>
-                            <td>{{marjasaalis.kuvaus}}</td>
-                            <td>{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
+                            {% if marjasaalis.marja_id == saalisJotaMuokataan.marja_id and marjasaalis.kaynti_id == saalisJotaMuokataan.kaynti_id %}
+                                {% block muokkaaSaalis %}
+                                {% endblock %}
+                            {% else %}
+                                <td>{{kaynti.marjat[loop.index0]}}</td> 
+                                <td>{{marjasaalis.maara}}</td>
+                                <td>{{marjasaalis.kuvaus}}</td>
+                                <td>{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
                                 {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
-                        
+
                         <tr>
                             <td></td>
                             <td></td>

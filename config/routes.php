@@ -129,7 +129,7 @@ $routes->post('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/sa
     PaikkaController::tallennaUusiSaalis($marjastaja_id, $paikka_id, $kaynti_id);
 });
 
-// Marjasaaliin editointinäkymä
+// Marjasaaliin muokkausnäkymä
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id/kaynti/:kaynti_id/saalis/:marja_id/muokkaa', function($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
     PaikkaController::muokkaaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id);
 });
