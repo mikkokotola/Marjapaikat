@@ -47,55 +47,132 @@ class MarjaController extends BaseController {
 
     // Marjan muokkaamisnäkymä
     public static function muokkausNakyma($marja_id) {
-        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
         self::check_logged_in();
         $marjatiedot = self::haeMarjandata($marja_id);
-        View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot));
+        $marjastaja = self::get_user_logged_in();
+
+        $onSuosikki = false;
+        foreach ($marjatiedot['suosikkikayttajat'] as $suosikkikayttaja) {
+            if ($marjastaja->id == $suosikkikayttaja->id) {
+                $onSuosikki = true;
+            }
+        }
+
+        View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'marjastaja' => $marjastaja, 'onSuosikki' => $onSuosikki));
     }
 
     // Marjan uudelleennimeäminen (lomakkeen käsittely)
     public static function muutaNimeaKasittele() {
-        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
-        self::check_logged_in();
-        $params = $_POST;
+        // Marjojen nimien muokkausoikeudet on vain ylläpitokäyttäjällä. Ylläpitokäyttäjät on määritelty toistaiseksi manuaalisesti.
+        $marjastaja = self::get_user_logged_in();
+        if ($marjastaja->id == 3) {
 
-        $marja_id = $params['marja_id'];
-        $attributes = array(
-            'nimi' => $params['nimi'],
-        );
+            $params = $_POST;
 
-        // Haetaan Marja, jota käyttäjä muokkasi ja uudelleennimetään.
-        $marja = Marja::hae($marja_id);
-        $marja->muutaNimea($attributes['nimi']);
-        $errors = $marja->errors();
+            $marja_id = $params['marja_id'];
+            $attributes = array(
+                'nimi' => $params['nimi'],
+            );
 
-        if (count($errors) > 0) {
-            $marjatiedot = self::haeMarjandata($marja_id);
-            View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'errors' => $errors, 'attributes' => $attributes));
+            // Haetaan Marja, jota käyttäjä muokkasi ja uudelleennimetään.
+            $marja = Marja::hae($marja_id);
+            $marja->muutaNimea($attributes['nimi']);
+            $errors = $marja->errors();
+
+            if (count($errors) > 0) {
+                $marjatiedot = self::haeMarjandata($marja_id);
+                View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'errors' => $errors, 'attributes' => $attributes));
+            } else {
+                // Kutsutaan Marjan saveChangedName-metodia, joka päivittää nimen tietokannassa
+                $marja->tallennaNimenMuutos();
+
+                Redirect::to('/marja/' . $marja->id, array('message' => 'Marjan nimi muutettu'));
+            }
         } else {
-            // Kutsutaan Marjan saveChangedName-metodia, joka päivittää nimen tietokannassa
-            $marja->tallennaNimenMuutos();
-
-            Redirect::to('/marja/' . $marja->id, array('message' => 'Marjan nimi muutettu'));
+            Redirect::to('/marja/' . $marja->id, array('message' => 'Marjan nimeä voi muokata vain ylläpitokäyttäjä.'));
         }
     }
 
     // Marjan poistaminen
     public static function poista($id) {
-        // Tätä täytyy vielä tiukentaa: oikeudet vain ylläpitokäyttäjälle.
-        self::check_logged_in();
-        $marja = Marja::hae($id);
-        // Kutsutaan Marja-luokan metodia delete, joka poistaa marjan sen id:llä
-        $marja->poista();
+        // Marjojen poistamisoikeudet on vain ylläpitokäyttäjällä. Ylläpitokäyttäjät on määritelty toistaiseksi manuaalisesti.
+        $marjastaja = self::get_user_logged_in();
+        if ($marjastaja->id == 3) {
+            $marja = Marja::hae($id);
+            // Kutsutaan Marja-luokan metodia delete, joka poistaa marjan sen id:llä
+            if ($marja) {
+                $marja->poista();
 
-        // Ohjataan käyttäjä marjojen listaussivulle ilmoituksen kera
-        Redirect::to('/', array('message' => 'Marja on poistettu!'));
+                // Ohjataan käyttäjä marjojen listaussivulle ilmoituksen kera
+                Redirect::to('/', array('message' => 'Marja on poistettu.'));
+            } else {
+                Redirect::to('/', array('message' => 'Marjaa ei löytynyt.'));
+            }
+        } else {
+            Redirect::to('/marja/' . $marja->id, array('message' => 'Marjan voi poistaa vain ylläpitokäyttäjä.'));
+        }    
     }
 
     public static function nayta($marja_id) {
         $marjatiedot = self::haeMarjandata($marja_id);
+        $marjastaja = self::get_user_logged_in();
 
-        View::make('marja/marja.html', array('marjatiedot' => $marjatiedot));
+        if ($marjastaja) {
+            $onSuosikki = false;
+
+//        Kint::dump($marjastaja);
+//        Kint::dump($marjatiedot);
+//        Kint::dump($marjatiedot['suosikkikayttajat']);
+
+            foreach ($marjatiedot['suosikkikayttajat'] as $suosikkikayttaja) {
+                if ($suosikkikayttaja && $marjastaja->id == $suosikkikayttaja->id) {
+                    $onSuosikki = true;
+                }
+            }
+
+            View::make('marja/marja.html', array('marjatiedot' => $marjatiedot, 'marjastaja' => $marjastaja, 'onSuosikki' => $onSuosikki));
+        } else {
+            View::make('marja/marja.html', array('marjatiedot' => $marjatiedot));
+        }
+    }
+
+    // Marjan asettaminen suosikiksi
+    public static function asetaSuosikiksi($marja_id, $marjastaja_id) {
+        if (self::check_logged_in_user($marjastaja_id)) {
+            $attributes = array(
+                'marja_id' => $marja_id,
+                'marjastaja_id' => $marjastaja_id
+            );
+
+            $suosikkimarja = new Suosikkimarja($attributes);
+            $errors = $suosikkimarja->errors();
+
+            if (count($errors) == 0) {
+                $suosikkimarja->tallenna();
+                Redirect::to('/marja/' . $marja_id, array('message' => 'Marja lisätty suosikiksi.'));
+            } else {
+                Redirect::to('/marja/' . $marja_id);
+            }
+        } else {
+            Redirect::to('/marja/' . $marja_id);
+        }
+    }
+
+    // Marjan poistaminen suosikeista
+    public static function poistaSuosikeista($marja_id, $marjastaja_id) {
+        if (self::check_logged_in_user($marjastaja_id)) {
+            $suosikkimarja = Suosikkimarja::haeMarjanJaMarjastajanMukaan($marja_id, $marjastaja_id);
+
+            if ($suosikkimarja) {
+                $suosikkimarja->poista();
+
+                Redirect::to('/marja/' . $marja_id, array('message' => 'Marja on poistettu suosikeista.'));
+            } else {
+                Redirect::to('/marja/' . $marja_id, array('message' => 'Suosikkimarjaa ei löytynyt.'));
+            }
+        } else {
+            Redirect::to('/marja/' . $marja_id);
+        }
     }
 
     // Apumetodi, joka hakee marjatilasto-näkymän tarvitseman marjadatan (tilastoineen).
@@ -139,7 +216,7 @@ class MarjaController extends BaseController {
             'marjanMaaraKuluvaVuosi' => $marjanMaaraKuluvaVuosi,
             'marjanTopPoimijat' => $marjanTopPoimijat
         );
-        
+
         return $marjatiedot;
     }
 

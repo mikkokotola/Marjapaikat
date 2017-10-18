@@ -5,10 +5,11 @@
 {% block muokkaaMarjaa %}
 {% endblock %}
 
-{% if user_logged_in %}
-<!--    <a href="{{base_path}}/marja/{{marjatiedot.marja.id}}/rename" class="btn btn-primary" >Muokkaa nimeä</a>-->
-    {{forms.edit_button("#{base_path}/marja/#{marjatiedot.marja.id}/muokkaa", "Muokkaa nimeä")}}
-    {{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/poista")}}
+{% if marjastaja.id == 3 %}
+
+{{forms.edit_button("#{base_path}/marja/#{marjatiedot.marja.id}/muokkaa", "Muokkaa nimeä")}}
+{{forms.delete_button("#{base_path}/marja/#{marjatiedot.marja.id}/poista")}}
+
 {% endif %}
 
 
@@ -33,6 +34,22 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if user_logged_in %}
+{% if onSuosikki  %}
+    <div>
+        <form method="post" action="{{base_path}}/marja/{{marjatiedot.marja.id}}/marjastaja/{{marjastaja.id}}/poistasuosikeista" style="display: inline-block;">
+            <button type="submit" class="btn btn-default">Poista suosikkimarjoistani</button>
+        </form>
+    </div>
+{% else %}
+    <div>
+        <form method="post" action="{{base_path}}/marja/{{marjatiedot.marja.id}}/marjastaja/{{marjastaja.id}}/asetasuosikiksi" style="display: inline-block;">
+            <button type="submit" class="btn btn-default">Lisää suosikkimarjoihini</button>
+        </form>
+    </div>
+{% endif %}
+{% endif %}
 
 <h2>Kärkipoimijat kuluvana vuonna</h2>
 <table class="table table-bordered table-striped">

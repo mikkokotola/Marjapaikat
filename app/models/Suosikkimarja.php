@@ -10,6 +10,7 @@ class Suosikkimarja extends BaseModel{
 
     public function __construct($attributes) {
         parent::__construct($attributes);
+        $this->validators = array('validoi_identtiset');
     }
 
     public static function haeKaikki() {
@@ -43,7 +44,6 @@ class Suosikkimarja extends BaseModel{
         
     }
     
-    // Ei taideta tarvita tässä lainkaan.
     public static function haeMarjastajanMukaan($marjastaja_id) {
         $query = DB::connection()->prepare('SELECT * FROM Suosikkimarja WHERE marjastaja_id=:id;');
         $query->execute(array('id' => $marjastaja_id));
@@ -60,6 +60,23 @@ class Suosikkimarja extends BaseModel{
         
     }
 
+    public static function haeMarjanJaMarjastajanMukaan($marja_id, $marjastaja_id) {
+        $query = DB::connection()->prepare('SELECT * FROM Suosikkimarja WHERE marjastaja_id=:marjastaja_id AND marja_id=:marja_id LIMIT 1;');
+        $query->execute(array('marjastaja_id' => $marjastaja_id, 'marja_id' => $marja_id));
+        $row = $query->fetch();
+
+        if ($row) {
+            $suosikkimarja = new Suosikkimarja(array(
+                'marjastaja_id' => $row['marjastaja_id'],
+                'marja_id' => $row['marja_id']
+            ));
+
+            return $suosikkimarja;
+        }
+        return null;
+        
+    }
+    
     public function tallenna() {
         $query = DB::connection()->prepare('INSERT INTO Suosikkimarja (marjastaja_id, marja_id) VALUES (:marjastaja_id, :marja_id);');
         $query->execute(array(
@@ -67,6 +84,23 @@ class Suosikkimarja extends BaseModel{
             'marja_id' => $this->marja_id
         ));
         
+    }
+    
+    public function poista() {
+        $query = DB::connection()->prepare('DELETE FROM Suosikkimarja WHERE marjastaja_id=:marjastaja_id AND marja_id=:marja_id');
+        $query->execute(array('marjastaja_id' => $this->marjastaja_id, 'marja_id' => $this->marja_id));
+    }
+    
+    public function validoi_identtiset() {
+        $errors = array();
+        
+        $suosikkimarjat = self::haeKaikki();
+        
+        foreach ($suosikkimarjat as $vanhasuosikki) {
+            if ($vanhasuosikki->marja_id == $this->marja_id && $vanhasuosikki->marjastaja_id == $this->marjastaja_id) {
+                $errors[] = "Marja on jo suosikkimarjasi.";
+            }
+        }
     }
 
 }

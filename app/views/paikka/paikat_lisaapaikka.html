@@ -1,3 +1,4 @@
+{% import "macros/forms.html" as forms %}      
 {% extends "base.html" %}
 {% block content %}
 
@@ -6,8 +7,10 @@
 <button class="btn btn-danger">Paikan lisäyksessä on vielä merkistöongelma: ääkköset bugaavat.</button>
 
 <div id="map"></div>
-
-<div id="form" >
+<div>
+{{forms.undo_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat")}}
+</div>
+<div id="form" style="display: none;">
     <table>
         <tr><td>Nimi:</td> <td><input type='text' id='name'/> </td> </tr>
         <tr><td></td><td><input type='button' value='Tallenna' onclick='saveDataPost()'/></td></tr>
@@ -29,8 +32,8 @@
     
     function initMap() {
         var mapProp = {
-            center: new google.maps.LatLng({{paikat[0].p}}, {{paikat[0].i}}),
-            zoom: 12,
+            center: new google.maps.LatLng({{karttasijainti.korkeuskeskus}}, {{karttasijainti.leveyskeskus}}),
+            zoom: {{karttasijainti.zoom}},
         };
         var map = new google.maps.Map(document.getElementById("map"), mapProp);
         //var markers = new Array();
@@ -54,6 +57,8 @@
                 map: map
             });
             //lisattavaMarker.setMap(map);
+            
+            document.getElementById('form').style.display="inline"; 
             infowindow.open(map, lisattavaMarker);
         
         });
@@ -73,13 +78,13 @@
         
         http.open("POST", url, true);
 
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=charset=iso-8859-1");
         http.setRequestHeader("Content-length", params.length);
         http.setRequestHeader("Connection", "close");
 
         http.onreadystatechange = function() {
                 if(http.readyState == 4 && http.status == 200) {
-                        alert(http.responseText);
+                        //alert(http.responseText);
                 }
                 window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
         }

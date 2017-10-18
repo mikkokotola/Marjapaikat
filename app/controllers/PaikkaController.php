@@ -18,31 +18,30 @@ class PaikkaController extends BaseController {
         if (self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
-
-            View::make('paikka/paikat.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja));
+            
+            $karttasijainti = self::kartanSijainti($paikat);
+            
+            View::make('paikka/paikat.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti));
         } else {
-//            Kint::dump(self::get_user_logged_in()->kayttajatunnus);
-//            Kint::dump(self::get_user_logged_in());
-//            Kint::dump($marjastaja_id);
-
-
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
 
-    // Paikanlisäämisnäkymään ohjaus.
+    // Paikanlisäämisnäkymä.
     public static function lisaaPaikka($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
-            View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja));
+            $karttasijainti = self::kartanSijainti($paikat);
+            
+            View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
 
-    // Uuden paikan tallentaminen tehty postilla.
+    // Uuden paikan tallentaminen.
     public static function tallennusKasittele($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $params = $_POST;
@@ -535,6 +534,50 @@ class PaikkaController extends BaseController {
         );
 
         return $paikkatiedot;
+    }
+    
+    // Määritellään kaikkien paikkojen näkymän rajat paikat-näkymää varten.
+    private static function kartanSijainti($paikat) {
+        
+            $pohjoisinP = -90;
+            $etelaisinP = 90;
+            $itaisinI = -180;
+            $lantisinI = 180;
+            foreach ($paikat as $paikka) {
+                if ($paikka->p > $pohjoisinP) {
+                    $pohjoisinP = $paikka->p;
+                }
+                if ($paikka->p < $etelaisinP) {
+                    $etelaisinP = $paikka->p;
+                }
+                
+                if ($paikka->i > $itaisinI) {
+                    $itaisinI = $paikka->i;
+                }
+                if ($paikka->i < $lantisinI) {
+                    $lantisinI = $paikka->i;
+                }
+            }
+            $leveys = $itaisinI - $lantisinI;
+            $korkeus = $pohjoisinP - $etelaisinP;
+            $leveyskeskus = $itaisinI - 0.5 * $leveys;
+            $korkeuskeskus = $pohjoisinP - 0.5 * $korkeus;
+            $zoom = 5;
+            if ($korkeus < 3 && $leveys < 10) {
+                $zoom = 7;
+            }
+            if ($korkeus < 0.3 && $leveys < 1.3) {
+                $zoom = 9;
+            }
+            if (($korkeus < 0.3 && $leveys < 0.2) || count($paikat) == 1 ) {
+                $zoom = 11;
+            }
+            $karttasijainti = array(
+                'korkeuskeskus' => $korkeuskeskus,
+                'leveyskeskus' => $leveyskeskus,
+                'zoom' => $zoom
+            );
+            return $karttasijainti;
     }
 
 }

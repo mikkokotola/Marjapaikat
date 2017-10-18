@@ -50,6 +50,15 @@ $routes->post('/marja/:id/poista', function($id) {
     MarjaController::poista($id);
 });
 
+$routes->post('/marja/:marja_id/marjastaja/:marjastaja_id/asetasuosikiksi', function($marja_id, $marjastaja_id) {
+    MarjaController::asetaSuosikiksi($marja_id, $marjastaja_id);
+});
+
+$routes->post('/marja/:marja_id/marjastaja/:marjastaja_id/poistasuosikeista', function($marja_id, $marjastaja_id) {
+    MarjaController::poistaSuosikeista($marja_id, $marjastaja_id);
+});
+
+
 
 // Käyttäjän kaikkien paikkojen näyttäminen.
 $routes->get('/marjastaja/:id/paikat', function($id) {

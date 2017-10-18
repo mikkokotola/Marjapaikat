@@ -14,16 +14,18 @@
 
 {% block muokkaaPaikka %}
 {% endblock %}
-
-{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
-{{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/poista", "Poista paikka")}}
+<div>
+    {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
+    {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/poista", "Poista paikka")}}
+</div>
 <!--<button class="btn btn-primary">Muokkaa</button>
 <button class="btn btn-danger">Poista paikka</button>-->
 <h2>Käynnit</h2>
 {% block lisaaKaynti %}
 {% endblock %}
-<a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
-
+<div>
+    <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
+</div>
 <table>
     <tbody>
         {% for kaynti in paikkatiedot.kaynnitJaSaaliit %}
