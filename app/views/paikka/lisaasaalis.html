@@ -3,9 +3,8 @@
 {% block lisaaSaalis %}
 
 {% if kaynti.id == kayntiJohonLisataan.id %}
-<p>
-Uusi marjamerkintä
-</p>
+
+<h3>Uusi marjamerkintä</h3>
 <form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kayntiJohonLisataan.id}}/saalis/tallennaUusi" style="display: block;">
     <div class="form-group">
         <label>Marja</label>

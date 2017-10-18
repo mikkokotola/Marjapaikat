@@ -13,7 +13,7 @@ class Marjasaalis extends BaseModel {
     public function __construct($attributes) {
         parent::__construct($attributes);
         // Validointi tekemättä.
-        $this->validators = array('validoi_maara', 'validoi_kuvaus', 'validoi_identiteetti');
+        $this->validators = array('validoi_maara', 'validoi_kuvaus');
     }
 
     public static function haeKaikki() {
@@ -189,9 +189,8 @@ class Marjasaalis extends BaseModel {
             'maara' => $this->maara,
             'kuvaus' => $this->kuvaus,
         ));
-        
     }
-    
+
     public function tallennaMuuttunut() {
         $query = DB::connection()->prepare('UPDATE Marjasaalis SET maara = :maara, kuvaus = :kuvaus WHERE marja_id = :marja_id AND kaynti_id = :kaynti_id;');
         $query->execute(array(
@@ -202,7 +201,6 @@ class Marjasaalis extends BaseModel {
         ));
     }
 
-    
     public function poista() {
         $query = DB::connection()->prepare('DELETE FROM Marjasaalis WHERE marja_id=:marja_id AND kaynti_id=:kaynti_id;');
         $query->execute(array('marja_id' => $this->marja_id, 'kaynti_id' => $this->kaynti_id));
@@ -228,7 +226,7 @@ class Marjasaalis extends BaseModel {
         return $errors;
     }
 
-    public function validoi_identiteetti() {
+    public function validoi_identiteetti_uusi() {
         $errors = array();
 
         $kaikkiMarjasaaliit = $this->haeKaikki();
@@ -237,7 +235,23 @@ class Marjasaalis extends BaseModel {
                 $errors[] = "Tässä käynnissä on jo merkintä samasta marjasta. Käyntiin ei voi tehdä useita merkintöjä samalle marjalle. Muokkaa vanhaa merkintää.";
             }
         }
-        
+
+        return $errors;
+    }
+
+    public function validoi_identiteetti_muokattava($muokattavasaalis) {
+        $errors = array();
+
+        $kaikkiMarjasaaliit = $this->haeKaikki();
+        foreach ($kaikkiMarjasaaliit as $marjasaalis) {
+            // Tarkastetaan, onko tarkastelussa muokattava marjasaaliis. Tehdään erroreita vain jos kyse on jostakin muusta.
+            if (!($muokattavasaalis->marja_id == $marjasaalis->marja_id && $muokattavasaalis->kaynti_id == $marjasaalis->kaynti_id)) {
+                if ($marjasaalis->marja_id == $this->marja_id && $marjasaalis->kaynti_id == $this->kaynti_id) {
+                    $errors[] = "Tässä käynnissä on jo merkintä samasta marjasta. Käyntiin ei voi tehdä useita merkintöjä samalle marjalle. Muokkaa vanhaa merkintää.";
+                }
+            }
+        }
+
         return $errors;
     }
 

@@ -12,7 +12,7 @@ class Paikka extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validoi_nimi', 'validoi_p', 'validoi_i', 'validoi_p_i_identtisetPaikat');
+        $this->validators = array('validoi_nimi', 'validoi_p', 'validoi_i');
     }
 
     public static function haeKaikki() {
@@ -134,17 +134,32 @@ class Paikka extends BaseModel {
         return $errors;
     }
 
-    public function validoi_p_i_identtisetPaikat() {
+    public function validoi_p_i_identtisetPaikat_uusi() {
         $errors = array();
 
         if (!is_double($this->i) && is_double($this->i)) {
-            $paikat = $this->haeKaikki();
+            $paikat = Paikka::haeKayttajanMukaan($this->marjastaja_id);
             foreach ($paikat as $paikka) {
                 if ($paikka->p == $this->p && $paikka->i == $this->i) {
                     $errors[] = "Paikka näillä koordinaateilla on jo olemassa.";
                 }
             }
+        }
+        return $errors;
+    }
 
+    public function validoi_p_i_identtisetPaikat_muokattava($muokattavaPaikka) {
+        $errors = array();
+
+        if (!is_double($this->i) && is_double($this->i)) {
+            $paikat = Paikka::haeKayttajanMukaan($this->marjastaja_id);
+            foreach ($paikat as $paikka) {
+                if (!($muokattavaPaikka->p == $paikka->p && $muokattavaPaikka->i == $paikka->i)) {
+                    if ($paikka->p == $this->p && $paikka->i == $this->i) {
+                        $errors[] = "Paikka näillä koordinaateilla on jo olemassa.";
+                    }
+                }
+            }
         }
         return $errors;
     }

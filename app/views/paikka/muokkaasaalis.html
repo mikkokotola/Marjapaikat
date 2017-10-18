@@ -2,34 +2,21 @@
 {% extends "/paikka/paikka.html" %}
 {% block muokkaaSaalis %}
 
-<td><form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/{{saalisJotaMuokataan.marja_id}}/muokkaa" style="display: block;"></td> 
-<td>{{marjasaalis.maara}}</td>
-<td>{{marjasaalis.kuvaus}}</td>
-<td>{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
-    {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</td>
-
-
-    <div class="form-group">
-        <label>Marja</label>
-        <select class="form-control" name="marja_id">
-            {% for marja in kaikkiMarjat %}
-            {% if attributes.marja_id == marja.id %}
-            <option value="{{marja.id}}" selected="selected">{{marja.nimi}}</option>
-            {% else %}
-            <option value="{{marja.id}}">{{marja.nimi}}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-        <label>Poimittu määrä (kg)</label>
-        <input type="number" name="maara" value="{{attributes.maara}}" step="any">
-               <label>Kommentti</label>
-        <input type="text" name="kuvaus" value="{{attributes.kuvaus}}">
-    </div>
-
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Tallenna</button>
-    </div>
+<form class="tr" method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/{{saalisJotaMuokataan.marja_id}}/muokkaa">
+    <span class="td">
+    <select class="form-control" name="marja_id">
+        {% for marja in kaikkiMarjat %}
+        {% if attributes.marja_id == marja.id %}
+        <option value="{{marja.id}}" selected="selected">{{marja.nimi}}</option>
+        {% else %}
+        <option value="{{marja.id}}">{{marja.nimi}}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    </span>
+    <span class="td"><input type="number" name="maara" value="{{attributes.maara}}" step="any"></span>
+    <span class="td"><input type="text" name="kuvaus" value="{{attributes.kuvaus}}"></span>
+    <span class="td"><button type="submit" class="btn btn-primary">Tallenna</button></span>
 </form>
-
 
 {% endblock %}

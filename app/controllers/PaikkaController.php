@@ -42,35 +42,6 @@ class PaikkaController extends BaseController {
         }
     }
 
-//    // Uuden paikan tallentaminen tehty get-komennolla ja parametreillä. EI KÄYTÖSSÄ, POISTETAAN.
-//    public static function tallennaPaikka($marjastaja_id) {
-//        if (self::check_logged_in_user($marjastaja_id)) {
-//            $params = $_GET;
-//            $attributes = array(
-//                'marjastaja_id' => $marjastaja_id,
-//                'p' => doubleval($params['lat']),
-//                'i' => doubleval($params['lng']),
-//                'nimi' => $params['nimi']
-//            );
-//
-//            $paikka = new Paikka($attributes);
-//            $errors = $paikka->errors();
-//
-//            if (count($errors) == 0) {
-//                // Lisättävä paikka on validi.
-//                $paikka->tallenna();
-//                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
-//            } else {
-//                // Paikassa oli vikaa, ei lisätä.
-//                $marjastaja = Marjastaja::hae($marjastaja_id);
-//                $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
-//
-//                View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
-//            }
-//        } else {
-//            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-//        }
-//    }
     // Uuden paikan tallentaminen tehty postilla.
     public static function tallennusKasittele($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
@@ -90,8 +61,19 @@ class PaikkaController extends BaseController {
 
             if (count($errors) == 0) {
                 // Lisättävä paikka on validi.
-                $paikka->tallenna();
-                //Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
+                // Tarkastetaan vielä, onko paikka samoilla koordinaateilla jo olemassa.
+                $errors = $paikka->validoi_p_i_identtisetPaikat_uusi();
+
+                if (count($errors) == 0) {
+                    $paikka->tallenna();
+                    Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
+                } else {
+                    // Kannassa oli jo paikka samoilla koordinaateilla, ei lisätä.
+                    $marjastaja = Marjastaja::hae($marjastaja_id);
+                    $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
+
+                    View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+                }
             } else {
                 // Paikassa oli vikaa, ei lisätä.
                 $marjastaja = Marjastaja::hae($marjastaja_id);
@@ -165,21 +147,32 @@ class PaikkaController extends BaseController {
             );
 
             // Parsitaan stringeistä p ja i doublet.
-            $paikka = new Paikka($attributes);
-            $errors = $paikka->errors();
+            $muokattuPaikka = new Paikka($attributes);
+            $errors = $muokattuPaikka->errors();
 
             //Kint::dump($paikka);
 
             if (count($errors) == 0) {
                 // Muutettava paikka on validi.
-                $paikka->tallennaMuuttunut();
-                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Paikan tiedot tallennettu'));
+                // Tarkastetaan vielä, että kannassa ei ole paikkoja samoilla koordinaateilla (paitsi jos se on juuri muokattava paikka).
+                $errors = $muokattuPaikka->validoi_p_i_identtisetPaikat_muokattava($paikka);
+
+                if (count($errors) == 0) {
+                    $muokattuPaikka->tallennaMuuttunut();
+                    Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Paikan tiedot tallennettu'));
+                } else {
+                    // Kannassa oli jo toinen paikka samoilla koordinaateilla, ei muuteta.
+                    $marjastaja = Marjastaja::hae($marjastaja_id);
+                    $muokattuPaikka = Paikka::hae($paikka_id);
+
+                    View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                }
             } else {
                 // Paikassa oli vikaa, ei muuteta.
                 $marjastaja = Marjastaja::hae($marjastaja_id);
-                $paikka = Paikka::hae($paikka_id);
+                $muokattuPaikka = Paikka::hae($paikka_id);
 
-                View::make('paikka/muokkaapaikka.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
@@ -237,7 +230,7 @@ class PaikkaController extends BaseController {
                     'pvm' => $pvm,
                     'kellonaika' => $kellonaika
                 );
-                
+
                 View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
@@ -345,7 +338,6 @@ class PaikkaController extends BaseController {
         }
     }
 
-    
     // Marjasaaliin lisäämisnäkymä.
     public static function lisaaSaalis($marjastaja_id, $paikka_id, $kaynti_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -359,7 +351,7 @@ class PaikkaController extends BaseController {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
-    
+
     // Marjasaaliin lisäämislomakkeen käsittely.
     public static function tallennaUusiSaalis($marjastaja_id, $paikka_id, $kaynti_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -375,13 +367,26 @@ class PaikkaController extends BaseController {
             );
 
             $marjasaalis = new Marjasaalis($attributes);
-            
+
             $errors = $marjasaalis->errors();
 
             if (count($errors) == 0) {
                 // Lisättävä marjasaalis on validi.
-                $marjasaalis->tallenna();
-                Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Uusi marjasaalis lisätty.'));
+                // Tarkastetaan vielä, ettei kannassa ole jo marjasaaliita samalle käynnille ja marjalle.
+                $errors = $marjasaalis->validoi_identiteetti_uusi();
+
+                if (count($errors) == 0) {
+                    // Ei ollut samaan käyntiin ja marjaan liittyvää saalista. Lisätään kantaan.
+                    $marjasaalis->tallenna();
+                    Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Uusi marjasaalis lisätty.'));
+                } else {
+                    // Kannassa oli jos samaan käyntiin ja marjaan liittyvä saalis, ei lisätä.
+                    $marjastaja = Marjastaja::hae($marjastaja_id);
+                    $paikkatiedot = self::haePaikanData($paikka_id);
+                    $kaikkiMarjat = Marja::haeKaikki();
+
+                    View::make('paikka/lisaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'kayntiJohonLisataan' => $kaynti, 'kaikkiMarjat' => $kaikkiMarjat, 'errors' => $errors, 'attributes' => $attributes));
+                }
             } else {
                 // Marjasaaliissa oli vikaa, ei lisätä.
                 $marjastaja = Marjastaja::hae($marjastaja_id);
@@ -389,13 +394,12 @@ class PaikkaController extends BaseController {
                 $kaikkiMarjat = Marja::haeKaikki();
 
                 View::make('paikka/lisaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'kayntiJohonLisataan' => $kaynti, 'kaikkiMarjat' => $kaikkiMarjat, 'errors' => $errors, 'attributes' => $attributes));
-                
             }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
-    
+
     // Marjasaaliin muokkausnäkymä.
     public static function muokkaaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -405,13 +409,74 @@ class PaikkaController extends BaseController {
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikkatiedot = self::haePaikanData($paikka_id);
             $kaikkiMarjat = Marja::haeKaikki();
-            View::make('paikka/muokkaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'saalisJotaMuokataan' => $saalis, 'kaikkiMarjat' => $kaikkiMarjat));
+
+            $attributes = array(
+                'marja_id' => $marja_id,
+                'kaynti_id' => $kaynti_id,
+                'maara' => $saalis->maara,
+                'kuvaus' => $saalis->kuvaus
+            );
+
+            View::make('paikka/muokkaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'saalisJotaMuokataan' => $saalis, 'kaikkiMarjat' => $kaikkiMarjat, 'attributes' => $attributes));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
-    
-    
+
+    // Marjasaaliin muokkauslomakkeen käsittely.
+    public static function saaliinMuokkausKasittele($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
+        $paikka = Paikka::hae($paikka_id);
+        $kaynti = Kaynti::hae($kaynti_id);
+        $saalis = Marjasaalis::haeMarjanJaKaynninMukaan($marja_id, $kaynti_id);
+        if ($kaynti_id == $saalis->kaynti_id && $paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
+            $params = $_POST;
+
+            $attributes = array(
+                'marja_id' => $params['marja_id'],
+                'kaynti_id' => $kaynti_id,
+                'maara' => doubleval($params['maara']),
+                'kuvaus' => $params['kuvaus']
+            );
+
+            $marjasaalis = new Marjasaalis($attributes);
+
+            $errors = $marjasaalis->errors();
+
+            if (count($errors) == 0) {
+                // Muutettava marjasaalis on validi.
+                // Tarkastetaan vielä, ettei kannassa ole muita samaan käyntiin ja marjaan liittyvää saalista.
+
+                $errors = $marjasaalis->validoi_identiteetti_muokattava($saalis);
+
+                if (count($errors) == 0) {
+                    // Poistetaan kannasta vanha kyseisiin käynteihin ja marjaan liittyvä saalis.
+                    $saalis->poista();
+
+                    // Tallennetaan kantaan uusi, muokattu marjasaalis (joka saattaa liittyä samaan marjaan tai toiseen marjaan).
+                    $marjasaalis->tallenna();
+
+                    Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Muokattu marjamerkintä tallennettu.'));
+                } else {
+                    // Kannassa oli toinen samaan käyntiin ja marjaan liittyvä saalis. Ei lisätä.
+                    $marjastaja = Marjastaja::hae($marjastaja_id);
+                    $paikkatiedot = self::haePaikanData($paikka_id);
+                    $kaikkiMarjat = Marja::haeKaikki();
+
+                    View::make('paikka/muokkaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'saalisJotaMuokataan' => $saalis, 'kaikkiMarjat' => $kaikkiMarjat, 'errors' => $errors, 'attributes' => $attributes));
+                }
+            } else {
+                // Marjasaaliissa oli vikaa, ei lisätä.
+                $marjastaja = Marjastaja::hae($marjastaja_id);
+                $paikkatiedot = self::haePaikanData($paikka_id);
+                $kaikkiMarjat = Marja::haeKaikki();
+
+                View::make('paikka/muokkaasaalis.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'saalisJotaMuokataan' => $saalis, 'kaikkiMarjat' => $kaikkiMarjat, 'errors' => $errors, 'attributes' => $attributes));
+            }
+        } else {
+            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
+        }
+    }
+
     // Marjasaaliin poistaminen
     public static function poistaSaalis($marjastaja_id, $paikka_id, $kaynti_id, $marja_id) {
         $paikka = Paikka::hae($paikka_id);
@@ -426,8 +491,6 @@ class PaikkaController extends BaseController {
         }
     }
 
-
-    
     // Apumetodi yksittäisen paikan näkymän muodostamiseen.
     private static function haePaikanData($paikka_id) {
 

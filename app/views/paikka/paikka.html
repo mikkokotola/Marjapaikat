@@ -20,8 +20,11 @@
 <!--<button class="btn btn-primary">Muokkaa</button>
 <button class="btn btn-danger">Poista paikka</button>-->
 <h2>Käynnit</h2>
-<table>
+{% block lisaaKaynti %}
+{% endblock %}
+<a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
 
+<table>
     <tbody>
         {% for kaynti in paikkatiedot.kaynnitJaSaaliit %}
         <tr>
@@ -32,53 +35,50 @@
                 {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/poista")}}
                 {% block muokkaaKaynti %}
                 {% endblock %}
-                <!--            <button class="btn btn-primary">Muokkaa</button>
-                                <button class="btn btn-danger">Poista</button>-->
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Marja</th>
-                            <th>Poimittu määrä (kg)</th>
-                            <th>Kommentti</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for marjasaalis in kaynti.marjasaaliit %}
-                        <tr>
-                            {% if marjasaalis.marja_id == saalisJotaMuokataan.marja_id and marjasaalis.kaynti_id == saalisJotaMuokataan.kaynti_id %}
-                                {% block muokkaaSaalis %}
-                                {% endblock %}
-                            {% else %}
-                                <td>{{kaynti.marjat[loop.index0]}}</td> 
-                                <td>{{marjasaalis.maara}}</td>
-                                <td>{{marjasaalis.kuvaus}}</td>
-                                <td>{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
-                                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</td>
-                            {% endif %}
-                        </tr>
-                        {% endfor %}
 
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/uusi" class="btn btn-primary" >Lisää marjamerkintä</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table">
+
+                    <div class="tr">
+                        <span class="td"><strong>Marja</strong></span>
+                        <span class="td"><strong>Määrä (kg)</strong></span>
+                        <span class="td"><strong>Kommentti</strong></span>
+                        <span class="td"></span>
+                    </div>
+
+                    {% for marjasaalis in kaynti.marjasaaliit %}
+
+                        {% if marjasaalis.marja_id == saalisJotaMuokataan.marja_id and marjasaalis.kaynti_id == saalisJotaMuokataan.kaynti_id %}
+                            {% block muokkaaSaalis %}
+                            {% endblock %}
+                        {% else %}
+                            <div class="tr">
+                                <span class="td">{{kaynti.marjat[loop.index0]}}</span>
+                                <span class="td">{{marjasaalis.maara}}</span>
+                                <span class="td">{{marjasaalis.kuvaus}}</span>
+                                <span class="td">{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
+                                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</span>
+                            </div>
+                        {% endif %}
+                    
+                    {% endfor %}
+
+                    <div class="tr">
+                        <span class="td"></span>
+                        <span class="td"></span>
+                        <span class="td"></span>
+                        <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/uusi" class="btn btn-primary" >Lisää marjamerkintä</a></span>
+                    </div>
+            
+                </div>
                 {% block lisaaSaalis %}
                 {% endblock %}
             </td>
         </tr>
         {% endfor %}
-        {% block lisaaKaynti %}
-        {% endblock %}
+
     </tbody>
 </table>
-<a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
+
 
 <script>
 
