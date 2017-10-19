@@ -31,19 +31,21 @@
         {% for kaynti in paikkatiedot.kaynnitJaSaaliit %}
         <tr>
             <td>
-                <strong>{{kaynti.pvm}} {{kaynti.kellonaika}}</strong>
-
-                {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/muokkaa")}}
-                {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/poista")}}
-                {% block muokkaaKaynti %}
-                {% endblock %}
-
+                {% if muokattavanKaynninNro and muokattavanKaynninNro == loop.index0 %}
+                    {% block muokkaaKaynti %}
+                    {% endblock %}
+                {% else %}
+                    <h3>{{kaynti.pvm}} {{kaynti.kellonaika}}</h3>
+                    {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/muokkaa")}}
+                    {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/poista")}}
+                {% endif %}
                 <div class="table">
 
                     <div class="tr">
                         <span class="td"><strong>Marja</strong></span>
                         <span class="td"><strong>Määrä (kg)</strong></span>
                         <span class="td"><strong>Kommentti</strong></span>
+                        <span class="td"></span>
                         <span class="td"></span>
                     </div>
 
@@ -59,21 +61,23 @@
                                 <span class="td">{{marjasaalis.kuvaus}}</span>
                                 <span class="td">{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
                                 {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</span>
+                                <span class="td"></span>
                             </div>
                         {% endif %}
                     
                     {% endfor %}
-
+                    {% block lisaaSaalis %}
+                    {% endblock %}
                     <div class="tr">
                         <span class="td"></span>
                         <span class="td"></span>
                         <span class="td"></span>
                         <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/uusi" class="btn btn-primary" >Lisää marjamerkintä</a></span>
+                        <span class="td"></span>
                     </div>
             
                 </div>
-                {% block lisaaSaalis %}
-                {% endblock %}
+                
             </td>
         </tr>
         {% endfor %}

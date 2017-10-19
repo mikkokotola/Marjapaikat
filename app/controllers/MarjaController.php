@@ -58,7 +58,11 @@ class MarjaController extends BaseController {
             }
         }
 
-        View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'marjastaja' => $marjastaja, 'onSuosikki' => $onSuosikki));
+        $attributes = array(
+            'nimi' => $marjatiedot['marja']->nimi
+        );
+
+        View::make('marja/muokkaamarjaa.html', array('marjatiedot' => $marjatiedot, 'marjastaja' => $marjastaja, 'onSuosikki' => $onSuosikki, 'attributes' => $attributes));
     }
 
     // Marjan uudelleennimeäminen (lomakkeen käsittely)
@@ -110,7 +114,7 @@ class MarjaController extends BaseController {
             }
         } else {
             Redirect::to('/marja/' . $marja->id, array('message' => 'Marjan voi poistaa vain ylläpitokäyttäjä.'));
-        }    
+        }
     }
 
     public static function nayta($marja_id) {

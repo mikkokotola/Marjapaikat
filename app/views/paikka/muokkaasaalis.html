@@ -17,6 +17,7 @@
     <span class="td"><input type="number" name="maara" value="{{attributes.maara}}" step="any"></span>
     <span class="td"><input type="text" name="kuvaus" value="{{attributes.kuvaus}}"></span>
     <span class="td"><button type="submit" class="btn btn-success">Tallenna</button></span>
+    <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}" class="btn btn-default">Peru</a></span>
 </form>
-{{forms.undo_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}")}}
+
 {% endblock %}

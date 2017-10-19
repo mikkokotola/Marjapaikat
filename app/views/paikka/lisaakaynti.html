@@ -4,21 +4,13 @@
 <tr>
     <td>
         <h3>Uusi käynti</h3>
-        <form method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/tallennaUusi" style="display: block;">
-            <div class="form-group">
-                <label>Päivämäärä</label>
-                <input type="date" name="pvm" value="{{attributes.pvm}}"><br>
-                <label>Kellonaika</label>
-                <input type="time" name="kellonaika" value="{{attributes.kellonaika}}">
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Tallenna</button>
-            </div>
-        </form>
-
-    </td>
-</tr>
-<div>{{forms.undo_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}")}}</div>
+        <div class="table">
+            <form class="tr" method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/tallennaUusi">
+                <span class="td"><input type="date" name="pvm" value="{{attributes.pvm}}"></span>
+                <span class="td"><input type="time" name="kellonaika" value="{{attributes.kellonaika}}"></span>
+                <span class="td"><button type="submit" class="btn btn-success">Tallenna</button></span>
+                <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}" class="btn btn-default">Peru</a></span>
+            </form>
+        </div>
 
 {% endblock %}

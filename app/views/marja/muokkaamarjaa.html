@@ -6,13 +6,13 @@
         <label>Uusi nimi</label>
         <input name="nimi" class="form-control" value="{{attributes.nimi}}" type="text">
         <input name="marja_id" value="{{marjatiedot.marja.id}}" type="hidden">
+
     </div>
 
     <div class="form-group">
         <button type="submit" class="btn btn-success">Tallenna</button>
+        <a href="{{base_path}}/marja/{{marjatiedot.marja.id}}" class="btn btn-default">Peru</a>
+
     </div>
 </form>
-<div>
-    {{forms.undo_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}")}}
-</div>
 {% endblock %}
