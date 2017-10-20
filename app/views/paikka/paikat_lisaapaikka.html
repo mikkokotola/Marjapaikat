@@ -1,14 +1,11 @@
-{% import "macros/forms.html" as forms %}      
 {% extends "base.html" %}
 {% block content %}
 
-<h1>{{marjastaja.etunimi}}n marjapaikat</h1>
-
-<button class="btn btn-danger">Paikan lisäyksessä on vielä merkistöongelma: ääkköset bugaavat.</button>
+<h1>Marjapaikat / {{marjastaja.etunimi}}</h1>
 
 <div id="map"></div>
 <div>
-{{forms.undo_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat")}}
+    <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat" class="btn btn-default">Peru</a>
 </div>
 <div id="form" style="display: none;">
     <table>

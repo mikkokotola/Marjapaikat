@@ -164,14 +164,14 @@ class PaikkaController extends BaseController {
                     $marjastaja = Marjastaja::hae($marjastaja_id);
                     $muokattuPaikka = Paikka::hae($paikka_id);
 
-                    View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                    View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'muokkaaPaikka' => true, 'errors' => $errors, 'attributes' => $attributes));
                 }
             } else {
                 // Paikassa oli vikaa, ei muuteta.
                 $marjastaja = Marjastaja::hae($marjastaja_id);
                 $muokattuPaikka = Paikka::hae($paikka_id);
 
-                View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                View::make('paikka/muokkaapaikka.html', array('paikka' => $muokattuPaikka, 'marjastaja' => $marjastaja, 'muokkaaPaikka' => true, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
@@ -224,7 +224,7 @@ class PaikkaController extends BaseController {
                     'kellonaika' => $kellonaika
                 );
 
-                View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
+                View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'lisaaKaynti' => true, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
