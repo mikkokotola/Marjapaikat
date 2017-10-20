@@ -7,20 +7,14 @@
  */
 class PaikkaController extends BaseController {
 
-//    public static function paikat() {
-//        View::make('paikka/paikat.html');
-//    }
-//    public static function paikka() {
-//        View::make('paikka/paikka.html');
-//    }
     // Tietyn marjastajan paikkojen listaaminen.
     public static function paikat($marjastaja_id) {
         if (self::check_logged_in_user($marjastaja_id)) {
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
-            
+
             $karttasijainti = self::kartanSijainti($paikat);
-            
+
             View::make('paikka/paikat.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
@@ -34,7 +28,7 @@ class PaikkaController extends BaseController {
             $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
             $karttasijainti = self::kartanSijainti($paikat);
-            
+
             View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
@@ -55,8 +49,8 @@ class PaikkaController extends BaseController {
             $paikka = new Paikka($attributes);
             $errors = $paikka->errors();
 
-//            Kint::dump($paikka);
-//            Kint::dump($errors);
+            Kint::dump($paikka);
+            Kint::dump($errors);
 
             if (count($errors) == 0) {
                 // Lisättävä paikka on validi.
@@ -65,22 +59,32 @@ class PaikkaController extends BaseController {
 
                 if (count($errors) == 0) {
                     $paikka->tallenna();
+                                        
                     Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat', array('message' => 'Paikka lisätty!'));
                 } else {
                     // Kannassa oli jo paikka samoilla koordinaateilla, ei lisätä.
+                
+                    
                     $marjastaja = Marjastaja::hae($marjastaja_id);
                     $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
-                    View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+                    $karttasijainti = self::kartanSijainti($paikat);
+
+                    View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti, 'errors' => $errors));
                 }
             } else {
                 // Paikassa oli vikaa, ei lisätä.
+                
                 $marjastaja = Marjastaja::hae($marjastaja_id);
                 $paikat = Paikka::haeKayttajanMukaan($marjastaja_id);
 
-                View::make('paikka/paikat.html', array('errors' => $errors, 'paikat' => $paikat, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+                $karttasijainti = self::kartanSijainti($paikat);
+
+                View::make('paikka/paikat_lisaapaikka.html', array('paikat' => $paikat, 'marjastaja' => $marjastaja, 'karttasijainti' => $karttasijainti, 'errors' => $errors));
+
             }
         } else {
+            
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
     }
@@ -90,7 +94,7 @@ class PaikkaController extends BaseController {
 
         $marjastaja = Marjastaja::hae($marjastaja_id);
         $paikkatiedot = self::haePaikanData($paikka_id);
-        
+
 
         if ($marjastaja_id == $paikkatiedot['paikka']->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             View::make('paikka/paikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja));
@@ -124,7 +128,7 @@ class PaikkaController extends BaseController {
                 'i' => $paikka->i,
                 'nimi' => $paikka->nimi
             );
-            View::make('paikka/muokkaapaikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokkaaPaikka' => true,'attributes' => $attributes));
+            View::make('paikka/muokkaapaikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokkaaPaikka' => true, 'attributes' => $attributes));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
@@ -146,8 +150,6 @@ class PaikkaController extends BaseController {
             // Parsitaan stringeistä p ja i doublet.
             $muokattuPaikka = new Paikka($attributes);
             $errors = $muokattuPaikka->errors();
-
-            //Kint::dump($paikka);
 
             if (count($errors) == 0) {
                 // Muutettava paikka on validi.
@@ -175,12 +177,6 @@ class PaikkaController extends BaseController {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
 
-//        $paikka = Paikka::find($paikka_id);
-//        if ($marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
-//            View::make('paikka/muokkaapaikkaa.html', array('paikka' => $paikka, 'marjastaja' => $marjastaja));
-//        } else {
-//            View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
-//        }
     }
 
     // Käynnin lisäämisnäkymä.
@@ -227,9 +223,7 @@ class PaikkaController extends BaseController {
                     'pvm' => $pvm,
                     'kellonaika' => $kellonaika
                 );
-                
-//                Kint::dump($paikkatiedot);
-//                Kint::dump($attributes);
+
                 View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
@@ -244,8 +238,6 @@ class PaikkaController extends BaseController {
         if ($paikka_id == $kaynti->paikka_id && $marjastaja_id == $paikka->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             $kaynti->poista();
 
-            //$marjastaja = Marjastaja::hae($marjastaja_id);
-            //$paikkatiedot = self::haePaikanData($paikka_id);
             // Ohjataan käyttäjä kyseisen paikan sivulle ilmoituksen kera
             Redirect::to('/marjastaja/' . $marjastaja_id . '/paikat/' . $paikka_id, array('message' => 'Käynti on poistettu'));
         } else {
@@ -267,7 +259,7 @@ class PaikkaController extends BaseController {
 
             foreach ($paikkatiedot['kaynnit'] as $key => $muokattavaKaynti) {
                 if ($muokattavaKaynti->id == $kaynti->id) {
-                    $muokattavanKaynninNro = $key+1;
+                    $muokattavanKaynninNro = $key + 1;
                     $pvm = $paikkatiedot['kaynnitJaSaaliit'][$key]['pvm'];
                     $kellonaika = $paikkatiedot['kaynnitJaSaaliit'][$key]['kellonaika'];
                 }
@@ -278,10 +270,6 @@ class PaikkaController extends BaseController {
                 'kellonaika' => $kellonaika
             );
 
-//            Kint::dump($kaynti);
-//            Kint::dump($paikkatiedot);
-//            Kint::dump($muokattavanKaynninNro);
-//            Kint::dump($attributes);
             View::make('paikka/muokkaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokattavanKaynninNro' => $muokattavanKaynninNro, 'attributes' => $attributes));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
@@ -496,21 +484,12 @@ class PaikkaController extends BaseController {
         $paikka = Paikka::hae($paikka_id);
         $kaynnit = Kaynti::haePaikanMukaan($paikka_id);
 
-        $format = 'Y-m-d H:i:s';
-
-
-
         $kaynnitJaSaaliit = array();
         foreach ($kaynnit as $kaynti) {
             $pvmKellonaika = $kaynti->aika;
             $pvm = substr($pvmKellonaika, 0, 10);
             $kellonaika = substr($pvmKellonaika, 11, 5);
 
-            //$dateTime = DateTime::createFromFormat($format, $pvmKellonaika);
-//            $pvm = DateTime::createFromFormat('Y-m-d', $pvmKellonaika);
-//            $kellonaika = DateTime::createFromFormat('H:i', $pvmKellonaika);
-//            $pvm = $dateTime->format('Y-m-d'); 
-//            $kellonaika = $dateTime->format('H:i');
             $marjasaaliit = Marjasaalis::haeKaynninMukaan($kaynti->id);
             $marjat = array();
             foreach ($marjasaaliit as $marjasaalis) {
@@ -535,49 +514,49 @@ class PaikkaController extends BaseController {
 
         return $paikkatiedot;
     }
-    
+
     // Määritellään kaikkien paikkojen näkymän rajat paikat-näkymää varten.
     private static function kartanSijainti($paikat) {
-        
-            $pohjoisinP = -90;
-            $etelaisinP = 90;
-            $itaisinI = -180;
-            $lantisinI = 180;
-            foreach ($paikat as $paikka) {
-                if ($paikka->p > $pohjoisinP) {
-                    $pohjoisinP = $paikka->p;
-                }
-                if ($paikka->p < $etelaisinP) {
-                    $etelaisinP = $paikka->p;
-                }
-                
-                if ($paikka->i > $itaisinI) {
-                    $itaisinI = $paikka->i;
-                }
-                if ($paikka->i < $lantisinI) {
-                    $lantisinI = $paikka->i;
-                }
+
+        $pohjoisinP = -90;
+        $etelaisinP = 90;
+        $itaisinI = -180;
+        $lantisinI = 180;
+        foreach ($paikat as $paikka) {
+            if ($paikka->p > $pohjoisinP) {
+                $pohjoisinP = $paikka->p;
             }
-            $leveys = $itaisinI - $lantisinI;
-            $korkeus = $pohjoisinP - $etelaisinP;
-            $leveyskeskus = $itaisinI - 0.5 * $leveys;
-            $korkeuskeskus = $pohjoisinP - 0.5 * $korkeus;
-            $zoom = 5;
-            if ($korkeus < 3 && $leveys < 10) {
-                $zoom = 7;
+            if ($paikka->p < $etelaisinP) {
+                $etelaisinP = $paikka->p;
             }
-            if ($korkeus < 0.3 && $leveys < 1.3) {
-                $zoom = 9;
+
+            if ($paikka->i > $itaisinI) {
+                $itaisinI = $paikka->i;
             }
-            if (($korkeus < 0.3 && $leveys < 0.2) || count($paikat) == 1 ) {
-                $zoom = 11;
+            if ($paikka->i < $lantisinI) {
+                $lantisinI = $paikka->i;
             }
-            $karttasijainti = array(
-                'korkeuskeskus' => $korkeuskeskus,
-                'leveyskeskus' => $leveyskeskus,
-                'zoom' => $zoom
-            );
-            return $karttasijainti;
+        }
+        $leveys = $itaisinI - $lantisinI;
+        $korkeus = $pohjoisinP - $etelaisinP;
+        $leveyskeskus = $itaisinI - 0.5 * $leveys;
+        $korkeuskeskus = $pohjoisinP - 0.5 * $korkeus;
+        $zoom = 5;
+        if ($korkeus < 3 && $leveys < 10) {
+            $zoom = 7;
+        }
+        if ($korkeus < 0.3 && $leveys < 1.3) {
+            $zoom = 9;
+        }
+        if (($korkeus < 0.3 && $leveys < 0.2) || count($paikat) == 1) {
+            $zoom = 11;
+        }
+        $karttasijainti = array(
+            'korkeuskeskus' => $korkeuskeskus,
+            'leveyskeskus' => $leveyskeskus,
+            'zoom' => $zoom
+        );
+        return $karttasijainti;
     }
 
 }

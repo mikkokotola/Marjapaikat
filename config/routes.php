@@ -25,39 +25,45 @@ $routes->get('/marjat', function() {
     MarjaController::index();
 });
 
+// Marjan lisäysnäkymä.
 $routes->get('/marjat/uusi', function() {
     MarjaController::lisaaMarja();
 });
 
+// Marjan lisäyksen käsittely.
 $routes->post('/marjat/tallennaUusi', function() {
     MarjaController::tallennaMarja();
 });
 
-
+// Yksittäisen marjan sivun näyttäminen.
 $routes->get('/marja/:id', function($id) {
     MarjaController::nayta($id);
 });
 
+// Marjan muokkausnäkymä.
 $routes->get('/marja/:id/muokkaa', function($id) {
     MarjaController::muokkausNakyma($id);
 });
 
+// Marjan muokkauksen käsittely.
 $routes->post('/marja/muokkaa', function() {
     MarjaController::muutaNimeaKasittele();
 });
 
+// Marjan poiston käsittely.
 $routes->post('/marja/:id/poista', function($id) {
     MarjaController::poista($id);
 });
 
+// Marjan suosikiksi asettamisen käsittely.
 $routes->post('/marja/:marja_id/marjastaja/:marjastaja_id/asetasuosikiksi', function($marja_id, $marjastaja_id) {
     MarjaController::asetaSuosikiksi($marja_id, $marjastaja_id);
 });
 
+// Marjan suosikeista poistamisen käsittely.
 $routes->post('/marja/:marja_id/marjastaja/:marjastaja_id/poistasuosikeista', function($marja_id, $marjastaja_id) {
     MarjaController::poistaSuosikeista($marja_id, $marjastaja_id);
 });
-
 
 
 // Käyttäjän kaikkien paikkojen näyttäminen.

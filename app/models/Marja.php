@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Marja on poimittavissa oleva marja. Marja voi liittyä useisiin marjastajiin
- * (liitostaulu Marjastajamarja) ja useisiin käynteihin (liitostaulu Marjakaynti).
+ * Marja on poimittavissa oleva marja. 
  *
  * @author mkotola
  */

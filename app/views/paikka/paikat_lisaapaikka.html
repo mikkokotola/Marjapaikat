@@ -83,15 +83,12 @@
         http.setRequestHeader("Connection", "close");
 
         http.onreadystatechange = function() {
+            
             window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
         }
         http.send(params);
-
         
     }
-
-
-
 
 </script>
 

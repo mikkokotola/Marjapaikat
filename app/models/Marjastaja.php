@@ -171,11 +171,5 @@ class Marjastaja extends BaseModel {
         return $errors;
     }
 
-//    $kayttajat = $this->all();
-//    foreach ($kayttajat as $kayttaja) {
-//        if ($kayttaja->kayttajatunnus === $this->kayttajatunnus) {
-//            $errors[] = "Käyttäjätunnus ei ole vapaana.";
-//        }
-//    }
 
 }

@@ -124,10 +124,6 @@ class MarjaController extends BaseController {
         if ($marjastaja) {
             $onSuosikki = false;
 
-//        Kint::dump($marjastaja);
-//        Kint::dump($marjatiedot);
-//        Kint::dump($marjatiedot['suosikkikayttajat']);
-
             foreach ($marjatiedot['suosikkikayttajat'] as $suosikkikayttaja) {
                 if ($suosikkikayttaja && $marjastaja->id == $suosikkikayttaja->id) {
                     $onSuosikki = true;

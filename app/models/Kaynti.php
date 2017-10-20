@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Kaynti on käynti tietyllä marjapaikalla. Käynti liittyy aina yhteen paikkaan.
- * Käynnillä on aika.
+ * Kaynti on käynti tietyllä marjapaikalla. 
  *
  * @author mkotola
  */
