@@ -7,8 +7,13 @@ Yleisiä linkkejä:
 
 Testitunnukset:
 Sovellusta voi testata kirjautuneena käyttäjänä seuraavilla tunnuksilla:
-Käyttäjänimi: kalle1
-Salasana: ahven
+Käyttäjänimi: testi
+Salasana: testi
+
+Sovellusta voi testata kirjautuneena ylläpitokäyttäjänä seuraavilla tunnuksilla:
+Käyttäjänimi: mikko1
+Salasana: hauki
+Ylläpitokäyttäjä voi normaalikäyttäjän toimintojen lisäksi poistaa ja nimetä uudelleen marjoja.
 
 ## Työn aihe
 

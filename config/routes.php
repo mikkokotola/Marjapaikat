@@ -77,8 +77,6 @@ $routes->post('/marjastaja/:id/paikat/tallennaUusi', function($id) {
 
 // Paikan näyttäminen
 $routes->get('/marjastaja/:marjastaja_id/paikat/:paikka_id', function($marjastaja_id, $paikka_id) {
-//    Kint::dump($marjastaja_id);
-//    Kint::dump($paikka_id);
     PaikkaController::nayta($marjastaja_id, $paikka_id);
 });
 

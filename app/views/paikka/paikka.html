@@ -12,26 +12,33 @@
     <li><strong>I: </strong> {{paikkatiedot.paikka.i}}</li>
 </ul>
 
-{% block muokkaaPaikka %}
-{% endblock %}
-<div>
-    {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
-    {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/poista", "Poista paikka")}}
-</div>
-<!--<button class="btn btn-primary">Muokkaa</button>
-<button class="btn btn-danger">Poista paikka</button>-->
+{% if muokkaaPaikka %}
+    {% block muokkaaPaikka %}
+    {% endblock %}
+{% else %}
+    <div>
+        {{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/muokkaa")}}
+        {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/poista", "Poista paikka")}}
+    </div>
+{% endif %}
+
 <h2>Käynnit</h2>
-{% block lisaaKaynti %}
-{% endblock %}
-<div>
-    <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
-</div>
+
+{% if lisaaKaynti %}
+    {% block lisaaKaynti %}
+    {% endblock %}
+{% else %}
+    <div>
+        <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/uusi" class="btn btn-primary" >Lisää uusi käynti</a>
+    </div>
+{% endif %}
+
 <table>
     <tbody>
         {% for kaynti in paikkatiedot.kaynnitJaSaaliit %}
         <tr>
             <td>
-                {% if muokattavanKaynninNro and muokattavanKaynninNro == loop.index0 %}
+                {% if muokattavanKaynninNro and muokattavanKaynninNro == loop.index %}
                     {% block muokkaaKaynti %}
                     {% endblock %}
                 {% else %}
@@ -45,7 +52,6 @@
                         <span class="td"><strong>Marja</strong></span>
                         <span class="td"><strong>Määrä (kg)</strong></span>
                         <span class="td"><strong>Kommentti</strong></span>
-                        <span class="td"></span>
                         <span class="td"></span>
                     </div>
 
@@ -61,7 +67,6 @@
                                 <span class="td">{{marjasaalis.kuvaus}}</span>
                                 <span class="td">{{forms.edit_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/muokkaa")}}
                                 {{forms.delete_button("#{base_path}/marjastaja/#{marjastaja.id}/paikat/#{paikkatiedot.paikka.id}/kaynti/#{kaynti.id}/saalis/#{marjasaalis.marja_id}/poista")}}</span>
-                                <span class="td"></span>
                             </div>
                         {% endif %}
                     
@@ -73,7 +78,6 @@
                         <span class="td"></span>
                         <span class="td"></span>
                         <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/{{kaynti.id}}/saalis/uusi" class="btn btn-primary" >Lisää marjamerkintä</a></span>
-                        <span class="td"></span>
                     </div>
             
                 </div>

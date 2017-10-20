@@ -87,12 +87,10 @@ class PaikkaController extends BaseController {
 
     // Yksittäisen paikan näyttäminen.
     public static function nayta($marjastaja_id, $paikka_id) {
-//        Kint::dump($marjastaja_id);
-//        Kint::dump($paikka_id);
 
         $marjastaja = Marjastaja::hae($marjastaja_id);
         $paikkatiedot = self::haePaikanData($paikka_id);
-        //$paikka = Paikka::hae($paikka_id);
+        
 
         if ($marjastaja_id == $paikkatiedot['paikka']->marjastaja_id && self::check_logged_in_user($marjastaja_id)) {
             View::make('paikka/paikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja));
@@ -126,7 +124,7 @@ class PaikkaController extends BaseController {
                 'i' => $paikka->i,
                 'nimi' => $paikka->nimi
             );
-            View::make('paikka/muokkaapaikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'attributes' => $attributes));
+            View::make('paikka/muokkaapaikka.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'muokkaaPaikka' => true,'attributes' => $attributes));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
@@ -192,7 +190,7 @@ class PaikkaController extends BaseController {
             $marjastaja = Marjastaja::hae($marjastaja_id);
             $paikkatiedot = self::haePaikanData($paikka_id);
 
-            View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja));
+            View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'lisaaKaynti' => true));
         } else {
             View::make('marjastaja/kirjaudu.html', array('error' => 'Kirjaudu sisään'));
         }
@@ -229,7 +227,9 @@ class PaikkaController extends BaseController {
                     'pvm' => $pvm,
                     'kellonaika' => $kellonaika
                 );
-
+                
+//                Kint::dump($paikkatiedot);
+//                Kint::dump($attributes);
                 View::make('paikka/lisaakaynti.html', array('paikkatiedot' => $paikkatiedot, 'marjastaja' => $marjastaja, 'errors' => $errors, 'attributes' => $attributes));
             }
         } else {
@@ -267,7 +267,7 @@ class PaikkaController extends BaseController {
 
             foreach ($paikkatiedot['kaynnit'] as $key => $muokattavaKaynti) {
                 if ($muokattavaKaynti->id == $kaynti->id) {
-                    $muokattavanKaynninNro = $key;
+                    $muokattavanKaynninNro = $key+1;
                     $pvm = $paikkatiedot['kaynnitJaSaaliit'][$key]['pvm'];
                     $kellonaika = $paikkatiedot['kaynnitJaSaaliit'][$key]['kellonaika'];
                 }

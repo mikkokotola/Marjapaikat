@@ -1,7 +1,7 @@
 -- Lisää INSERT INTO lauseet tähän tiedostoon
 
 -- Marjastaja-taulun testidata --
-INSERT INTO Marjastaja (id, kayttajatunnus, salasana, etunimi, sukunimi) VALUES (1, 'kalle1', 'ahven', 'Kalle', 'Aaltonen');
+INSERT INTO Marjastaja (id, kayttajatunnus, salasana, etunimi, sukunimi) VALUES (1, 'testi', 'testi', 'Kalle', 'Aaltonen');
 INSERT INTO Marjastaja (id, kayttajatunnus, salasana, etunimi, sukunimi) VALUES (2, 'jukka1', 'lahna', 'Jukka', 'Tatti');
 INSERT INTO Marjastaja (id, kayttajatunnus, salasana, etunimi, sukunimi) VALUES (3, 'mikko1', 'hauki', 'Mikko', 'Marjastaja');
 ALTER SEQUENCE Marjastaja_id_seq RESTART WITH 4;
@@ -29,18 +29,18 @@ INSERT INTO Paikka (id, marjastaja_id, p, i, nimi) VALUES (11, 1, 62.407724, 25.
 ALTER SEQUENCE Paikka_id_seq RESTART WITH 12;
 
 -- Kaynti-taulun testidata --
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (1, 1, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (2, 1, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (3, 1, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (4, 2, NOW());
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (1, 1, '2015-09-09 06:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (2, 1, '2015-09-10 08:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (3, 1, '2016-10-10 15:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (4, 2, '2015-09-11 06:00:00');
 INSERT INTO Kaynti (id, paikka_id, aika) VALUES (5, 2, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (6, 3, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (7, 3, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (8, 4, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (9, 4, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (10, 4, NOW());
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (6, 3, '2016-08-31 10:05:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (7, 3, '2016-09-02 10:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (8, 4, '2017-10-01 12:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (9, 4, '2017-10-02 12:00:00');
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (10, 4, '2017-10-05 16:00:00');
 INSERT INTO Kaynti (id, paikka_id, aika) VALUES (11, 4, NOW());
-INSERT INTO Kaynti (id, paikka_id, aika) VALUES (12, 7, NOW());
+INSERT INTO Kaynti (id, paikka_id, aika) VALUES (12, 7, '2017-10-05 16:00:00');
 ALTER SEQUENCE Kaynti_id_seq RESTART WITH 13;
 
 -- Suosikkimarja-taulun testidata --

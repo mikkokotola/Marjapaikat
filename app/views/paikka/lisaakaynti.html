@@ -1,16 +1,23 @@
    
 {% extends "/paikka/paikka.html" %}
 {% block lisaaKaynti %}
-<tr>
-    <td>
-        <h3>Uusi käynti</h3>
-        <div class="table">
-            <form class="tr" method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/tallennaUusi">
-                <span class="td"><input type="date" name="pvm" value="{{attributes.pvm}}"></span>
-                <span class="td"><input type="time" name="kellonaika" value="{{attributes.kellonaika}}"></span>
-                <span class="td"><button type="submit" class="btn btn-success">Tallenna</button></span>
-                <span class="td"><a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}" class="btn btn-default">Peru</a></span>
-            </form>
-        </div>
+<h3>Uusi käynti</h3>
+<div class="table">
+    <div class="tr">
+        <span class="td"><strong>Päivämäärä</strong></span>
+        <span class="td"><strong>Kellonaika</strong></span>
+        <span class="td"></span>
+
+    </div>
+    <form class="tr" method="post" action="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}/kaynti/tallennaUusi">
+        <span class="td"><input type="date" name="pvm" value="{{attributes.pvm}}"></span>
+        <span class="td"><input type="time" name="kellonaika" value="{{attributes.kellonaika}}"></span>
+        <span class="td">
+            <button type="submit" class="btn btn-success">Tallenna</button> 
+            <a href="{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/{{paikkatiedot.paikka.id}}" class="btn btn-default">Peru</a>
+        </span>
+
+    </form>
+</div>
 
 {% endblock %}

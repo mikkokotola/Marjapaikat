@@ -69,7 +69,7 @@
 <script>
     function saveDataPost() {
 
-        var name = escape(document.getElementById('name').value);
+        var name = document.getElementById('name').value;
         var latlng = lisattavaMarker.getPosition();
         var params = "nimi=" + name + "&lat=" + latlng.lat() + "&lng=" + latlng.lng();
         var url = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat/tallennaUusi';
@@ -78,15 +78,12 @@
         
         http.open("POST", url, true);
 
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=charset=iso-8859-1");
+        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         http.setRequestHeader("Content-length", params.length);
         http.setRequestHeader("Connection", "close");
 
         http.onreadystatechange = function() {
-                if(http.readyState == 4 && http.status == 200) {
-                        //alert(http.responseText);
-                }
-                window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
+            window.location = '{{base_path}}/marjastaja/{{marjastaja.id}}/paikat'
         }
         http.send(params);
 
